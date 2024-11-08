@@ -3,7 +3,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import GameListEntry from "./GameListEntry";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 const GamesListPage = () => {
     const [games, setGames] = useState([]);
@@ -17,7 +17,7 @@ const GamesListPage = () => {
         client.current = new Client({
             brokerURL: process.env.REACT_APP_WS_URL,
             connectHeaders: {},
-            debug: (str) => console.log(str),
+            // debug: (str) => console.log(str),
             reconnectDelay: 5000,
             heartbeatIncoming: 4000,
             heartbeatOutgoing: 4000,
@@ -34,7 +34,11 @@ const GamesListPage = () => {
 
         client.current.activate();
         fetchGames()
-        return () => client.current.deactivate();
+        return () => {
+            if (client.current && client.current.connected) {
+                client.current.deactivate();
+            }
+        };
     }, []);
 
     const sendMessage = () => {
@@ -74,7 +78,7 @@ const GamesListPage = () => {
     const createNewGame = () => {
     }
     const joinGame = (gameID) => {
-        fetch(process.env.REACT_APP_API_URL + '/games/'+gameID+'/join', {
+        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/join', {
             method: 'POST', // Specify the HTTP method
             headers: {
                 'Content-Type': 'application/json', // Set the appropriate headers, such as content type
@@ -91,12 +95,19 @@ const GamesListPage = () => {
                 return response.json(); // Parse the response as JSON
             })
             .then(data => {
+                // if (client.current && client.current.connected) {
+                //     client.current.publish({
+                //         destination: "/app/updatePlayerId",
+                //         body: JSON.stringify({data})
+                //     });
+                // }
                 console.log('Success:', data); // Handle the parsed data
+                localStorage.setItem('playerID',data)
             })
             .catch(error => {
                 console.error('Error:', error); // Handle any errors
             });
-        console.log(gameID)
+        console.log("gameID: " + gameID)
         goToGamePage(gameID)
 
     }
@@ -113,11 +124,13 @@ const GamesListPage = () => {
         <div>
             <h1>Games</h1>
             <h3>Enter you name:</h3><input type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
-            <ul style={playerName.length>0?styles.list:styles.listDisabled}>
+            <ul style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (
-                    <li key={index} style={playerName.length>0 && game.players.length<6?styles.list:styles.listDisabled}><GameListEntry numberOfPayers={String(game.players.length)}
+                    <li key={index}
+                        style={playerName.length > 0 && game.players.length < 6 ? styles.list : styles.listDisabled}>
+                        <GameListEntry numberOfPayers={String(game.players.length)}
                                        playerNames={game.players.map(player => player.name).join(", ")}
-                                       onClick={()=>joinGame(game.id)}/></li>
+                                       onClick={() => joinGame(game.id)}/></li>
                 ))}
             </ul>
 
@@ -141,7 +154,7 @@ const styles = {
     listDisabled: {
         pointerEvents: 'none',
         opacity: '0.5',
-        cursor:'default'
+        cursor: 'default'
     }
 };
 
