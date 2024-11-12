@@ -28,6 +28,7 @@ const GamesListPage = () => {
             client.current.subscribe('/topic/games', (message) => {
                 const messageBody = JSON.parse(message.body);
                 fetchGames()
+                console.log("got")
                 setMessages((prevMessages) => [...prevMessages, messageBody]);
             });
         };
@@ -78,43 +79,45 @@ const GamesListPage = () => {
     const createNewGame = () => {
     }
     const joinGame = (gameID) => {
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/join', {
-            method: 'POST', // Specify the HTTP method
-            headers: {
-                'Content-Type': 'application/json', // Set the appropriate headers, such as content type
-                // Add other headers if needed, like Authorization
-            },
-            body: JSON.stringify({
-                playerName: playerName
-            }) // Convert the request body to a JSON string
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json(); // Parse the response as JSON
+        if(localStorage.getItem('playerID')==null) {
+            fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/join', {
+                method: 'POST', // Specify the HTTP method
+                headers: {
+                    'Content-Type': 'application/json', // Set the appropriate headers, such as content type
+                    // Add other headers if needed, like Authorization
+                },
+                body: JSON.stringify({
+                    playerName: playerName
+                }) // Convert the request body to a JSON string
             })
-            .then(data => {
-                // if (client.current && client.current.connected) {
-                //     client.current.publish({
-                //         destination: "/app/updatePlayerId",
-                //         body: JSON.stringify({data})
-                //     });
-                // }
-                console.log('Success:', data); // Handle the parsed data
-                localStorage.setItem('playerID',data)
-            })
-            .catch(error => {
-                console.error('Error:', error); // Handle any errors
-            });
-        console.log("gameID: " + gameID)
-        goToGamePage(gameID)
-
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json(); // Parse the response as JSON
+                })
+                .then(data => {
+                    // if (client.current && client.current.connected) {
+                    //     client.current.publish({
+                    //         destination: "/app/updatePlayerId",
+                    //         body: JSON.stringify({data})
+                    //     });
+                    // }
+                    console.log('Success:', data); // Handle the parsed data
+                    localStorage.setItem('playerID',data)
+                    goToGamePage(gameID)
+                })
+                .catch(error => {
+                    console.error('Error:', error); // Handle any errors
+                });
+        }
+        else{
+         goToGamePage(gameID)
+        }
     }
     const goToGamePage = (gameID) => {
-        navigate('/game', {
+        navigate('/game/'+gameID, {
             state: {
-                gameID: gameID,
                 playerName: playerName
             }
         });

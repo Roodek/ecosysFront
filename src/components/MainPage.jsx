@@ -24,7 +24,7 @@ const MainPage = () => {
             <div className="content">
                 <Routes>
                     <Route path="/" element={<GamesListPage/>}/>
-                    <Route path="/game" element={<GamePage/>}/>
+                    <Route path={"/game/:gameID"} element={<GamePage/>}/>
                 </Routes>
             </div>
             </Router>

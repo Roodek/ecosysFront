@@ -1,49 +1,53 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import GameListEntry from "./GameListEntry";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 const GamePage = () => {
     const location = useLocation();
-    const {gameID, playerName} = location.state || {};
-    const [game,setGame] = useState([]);
+    const navigate = useNavigate();
+    const {playerName} = location.state || {};
+    const {gameID} = useParams()
+    const [game, setGame] = useState([]);
+    const [joining, setJoining] = useState(false);
 
-    useEffect(()=>{
-        window.addEventListener("beforeunload",handleBeforeUnload)
-        window.addEventListener("popstate",handleBeforeUnload)
+    useEffect(() => {
+        window.addEventListener("beforeunload", handleBeforeLeave)
+        window.addEventListener("popstate", handleBeforeLeave)
+        console.log("onload: "+joining)
 
         fetchGame()
 
         return () => {
-            // handleBeforeUnload()
-            console.log("clean")
-            window.removeEventListener("popstate",handleBeforeUnload)
-            window.removeEventListener("beforeunload", handleBeforeUnload);
+            window.removeEventListener("popstate", handleBeforeLeave)
+            window.removeEventListener("beforeunload", handleBeforeLeave);
         }
-    },[])
+    }, [])
 
-
-    const fetchGame = () =>{
-        fetch(process.env.REACT_APP_API_URL + '/games/'+gameID)
+    const fetchGame = () => {
+        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID)
             .then(response => response.json())
-            .then(game => {console.log(game);setGame(game)})
+            .then(game => {
+                console.log(game);
+                setGame(game)
+            })
             .catch(error => console.log(error));
     }
 
-    const handleBeforeUnload = () => {
-        console.log("unload")
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave', {
-            method: 'POST', // Specify the HTTP method
-            headers: {
-                'Content-Type': 'application/json', // Set the appropriate headers, such as content type
-                // Add other headers if needed, like Authorization
-            },
-            body: JSON.stringify({
+    const handleBeforeLeave = () => {
+        if (localStorage.getItem('playerID')!=null) {
+            console.log("unload")
+            const data = {
                 playerID: localStorage.getItem('playerID')
-            }) // Convert the request body to a JSON string
-        }).then()
+            }
+            navigator.sendBeacon(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
+                JSON.stringify(data))
+            localStorage.removeItem('playerID')
+        }
+        navigate('/');
     }
-    const startGame = () =>{
+
+    const startGame = () => {
         console.log(game)
     }
     return (
@@ -51,14 +55,15 @@ const GamePage = () => {
             <div style={styles.gameWindow}>
                 <h1>GamePage: {gameID}</h1>
                 <h3>{localStorage.getItem('playerID')}</h3>
-                {game.players && game.players[0].name===playerName && <button onClick={startGame}>start game</button>}
+                {game.players && game.players[0].name === playerName && <button onClick={startGame}>start game</button>}
+                <button onClick={handleBeforeLeave}>leave</button>
             </div>
 
         </div>);
 };
 
-const styles={
-    gameWindow:{
+const styles = {
+    gameWindow: {
         padding: '10px',
         border: '5px solid #ddd',
         borderRadius: '4px',
