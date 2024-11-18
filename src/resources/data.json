@@ -1,0 +1,118 @@
+[{
+  "_id": {
+    "$binary": {
+      "base64": "B3hdUxwoQgG2pcDHICRrVA==",
+      "subType": "04"
+    }
+  },
+  "players": [
+    {
+      "_id": {
+        "$binary": {
+          "base64": "U3RJCnZzQOG2JjlCqBiEeA==",
+          "subType": "04"
+        }
+      },
+      "name": "Emi",
+      "cardsInHand": [],
+      "board": [
+        []
+      ],
+      "pointCount": 0
+    },
+    {
+      "_id": {
+        "$binary": {
+          "base64": "/5ztQsJiTzuPpJt66/XksA==",
+          "subType": "04"
+        }
+      },
+      "name": "Rodek",
+      "cardsInHand": [],
+      "board": [
+        []
+      ],
+      "pointCount": 0
+    },
+    {
+      "_id": {
+        "$binary": {
+          "base64": "bQtsPkl2RZGun9q1TbFveg==",
+          "subType": "04"
+        }
+      },
+      "name": "3rd player",
+      "cardsInHand": [],
+      "board": [
+        []
+      ],
+      "pointCount": 0
+    }
+  ],
+  "cardStack": [],
+  "turn": 0,
+  "_class": "com.eco.ecosystem.entities.Game"
+},
+
+
+{
+  "_id": {
+    "$binary": {
+      "base64": "U3RJCnZzQOG2JjlCqBiEeA==",
+      "subType": "04"
+    }
+  },
+  "name": "Emi",
+  "cardsInHand": [
+    {
+      "cardType": "WOLF"
+    },
+    {
+      "cardType": "BEE"
+    },
+    {
+      "cardType": "EAGLE"
+    },
+    {
+      "cardType": "FISH"
+    },
+    {
+      "cardType": "FISH"
+    },
+    {
+      "cardType": "WOLF"
+    },
+    {
+      "cardType": "MEADOW"
+    },
+    {
+      "cardType": "FISH"
+    },
+    {
+      "cardType": "DRAGONFLY"
+    },
+    {
+      "cardType": "FISH"
+    }
+  ],
+  "board": [
+    [
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      {
+        "cardType": "FOX"
+      },
+      null
+    ],
+    [
+      null,
+      null,
+      null
+    ]
+  ],
+  "pointCount": 0
+}]

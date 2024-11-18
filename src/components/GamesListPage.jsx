@@ -28,11 +28,11 @@ const GamesListPage = () => {
             client.current.subscribe('/topic/games', (message) => {
                 const messageBody = JSON.parse(message.body);
                 fetchGames()
-                console.log("got")
+                console.log("message got")
                 setMessages((prevMessages) => [...prevMessages, messageBody]);
             });
         };
-
+        console.log("list page opened")
         client.current.activate();
         fetchGames()
         return () => {
@@ -63,13 +63,13 @@ const GamesListPage = () => {
         }
     }
     const connectToTargetTopic = () => {
-        client.current.subscribe('/topic/messages/' + topicID, (message) => {
+        client.current.subscribe('/topic/games/' + topicID, (message) => {
             const messageBody = JSON.parse(message.body);
             setMessages((prevMessages) => [...prevMessages, messageBody]);
         });
-
     }
     const fetchGames = () => {
+        console.log("fetchgames")
         fetch(process.env.REACT_APP_API_URL + '/games')
             .then(response => response.json())
             .then(games => setGames(games))
@@ -77,6 +77,26 @@ const GamesListPage = () => {
     }
 
     const createNewGame = () => {
+        fetch(process.env.REACT_APP_API_URL + '/games/new', {
+            method: 'POST', // Specify the HTTP method
+            headers: {
+                'Content-Type': 'application/json', // Set the appropriate headers, such as content type
+                // Add other headers if needed, like Authorization
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(gameID => {
+                console.log('Successfully created game:', gameID); // Handle the parsed data
+                joinGame(gameID)
+            })
+            .catch(error => {
+                console.error('Error:', error); // Handle any errors
+            });
     }
     const joinGame = (gameID) => {
         if(localStorage.getItem('playerID')==null) {
@@ -97,14 +117,9 @@ const GamesListPage = () => {
                     return response.json(); // Parse the response as JSON
                 })
                 .then(data => {
-                    // if (client.current && client.current.connected) {
-                    //     client.current.publish({
-                    //         destination: "/app/updatePlayerId",
-                    //         body: JSON.stringify({data})
-                    //     });
-                    // }
                     console.log('Success:', data); // Handle the parsed data
                     localStorage.setItem('playerID',data)
+                    localStorage.setItem('playerName',playerName.toString())
                     goToGamePage(gameID)
                 })
                 .catch(error => {
@@ -136,7 +151,7 @@ const GamesListPage = () => {
                                        onClick={() => joinGame(game.id)}/></li>
                 ))}
             </ul>
-
+            <button disabled={playerName.length === 0} onClick={createNewGame}>create new game</button>
             <button onClick={connectToTargetTopic}>connect to target topic</button>
             <button onClick={sendMessage}>Send Message</button>
             <input type={"text"} onChange={(e) => setTopicID(e.target.value)}/>

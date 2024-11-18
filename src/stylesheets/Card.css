@@ -1,0 +1,17 @@
+.card{
+    width: 75px;
+    height: 75px;
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    font-size: small;
+}
+.selectedCard{
+    width: 75px;
+    height: 75px;
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    font-size: small;
+    background-color: chartreuse;
+}
