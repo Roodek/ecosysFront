@@ -98,12 +98,14 @@ const GamePage = () => {
     }
 
     const connectToGameSocket = () => {
-        client.current.subscribe('/topic/games/' + gameID, (message) => {
-            const messageBody = JSON.parse(message.body);
+        if (client.status === 'CONNECTED') {
+            client.current.subscribe('/topic/games/' + gameID, (message) => {
+                const messageBody = JSON.parse(message.body);
 
-            reactToMessage(messageBody)
-            fetchGameForPlayer()
-        });
+                reactToMessage(messageBody)
+                fetchGameForPlayer()
+            });
+        }
     }
     const reactToMessage = (messageBody) => {
         console.log(messageBody)//todo process message accordingly
@@ -125,8 +127,8 @@ const GamePage = () => {
             })
             .catch(error => console.log(error));
     }
-    const submitMove = () =>{
-        console.log("move submitted")
+    const submitMove = (card, selectedSlot) =>{
+        console.log("move submitted: "+card+' - '+ JSON.stringify(selectedSlot))
     }
     return (
         <div>
@@ -135,7 +137,7 @@ const GamePage = () => {
                     <h1>Game: {gameID}</h1>
                     <h2>host: {game.players && game.players[0].name}</h2>
                     <h3>players: {game.players && game.players.map(player => player.name).join(", ")}</h3>
-                    {game.players && game.players.length > 0 && game.players[0].name === playerName &&
+                    {game.players && game.players.length > 0 && game.players[0].playerID === localStorage.getItem('playerID') &&
                         <button disabled={game.players.length < 3} onClick={startGame}>start game</button>}
                     <button onClick={handleBeforeLeave}>leave</button>
                 </div>}

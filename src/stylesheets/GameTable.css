@@ -34,10 +34,29 @@
     font-size: 14px;
     text-align: center;
 }
+.large-board .availableCell {
+    width: 60px;
+    height: 60px;
+    background-color: #9ed974;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #456e34;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+}
+.large-board .availableCell:hover {
+    background-color: #b7e497;
+    border: 3px solid #527849;
+
+}
 
 .large-board .cell {
     width: 60px;
     height: 60px;
+    /*border: 3px solid #ccc;*/
 }
 
 .panels-container {

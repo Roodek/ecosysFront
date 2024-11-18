@@ -10,21 +10,58 @@ const GameTable = ({
                        onSubmitMove,
                        availableMoves
                    }) => {
-    const [moveCompleted, setMoveCompleted] = useState(false)
+    const [cardPut, setCardPut] = useState(false)
     const [selectedCardIndex, setSelectedCardIndex] = useState(null)
     const [selectedCard, setSelectedCard] = useState(null)
-    const [availableSlots,setAvailableSlots] = useState([])
+    const [selectedSlot, setSelectedSlot] = useState(null)
+    const [availableSlots, setAvailableSlots] = useState([])
+    const [rabbitPut, setRabbitPut] = useState(false)
 
     const selectCard = (card, index) => {
         setSelectedCardIndex(index)
         setSelectedCard(card)
         setAvailableSlots(availableMoves.availableSlots)
-        console.log(card)
-        console.log(availableMoves.availableSlots)
+        setSelectedSlot(null)
+        setCardPut(false)
+        setRabbitPut(false)
+    }
+    const selectSlot = (x, y) => {
+        setSelectedSlot({coordX:x,coordY: y});
+        setCardPut(true)
+        if(selectedCard==="RABBIT"){
+            setRabbitPut(true)
+        }else{
+            setRabbitPut(false)
+        }
+    }
+    const selectSlotForSwap = (x,y) =>{
+        console.log(JSON.stringify({coordX:x,coordY:y}));
+    }
+    const swapCards = () =>{
+        var slots = [selectedSlot]
+        for(var i=0; i<largeBoard.length;i++){
+            for(var j=0;j<largeBoard[i].length;j++){
+                if(largeBoard[i][j]!==null){
+                    slots.push({coordX: i,coordY: j});
+                }
+            }
+        }
+        setAvailableSlots(slots)
+    }
+    const cancelMove = () =>{
+        setSelectedSlot(null)
+        setSelectedCard(null)
+        setCardPut(false)
+        setSelectedCardIndex(null)
+        setAvailableSlots([])
     }
 
-    const isSlotAvailable = (x,y)=>{
-        return availableSlots.some(obj=> obj.coordX===x && obj.coordY === y)
+    const isSlotAvailable = (x, y) => {
+        return availableSlots.some(obj => obj && ( obj.coordX === x && obj.coordY === y))
+    }
+    const isSubmitMoveAvailable = () =>{
+            return !cardPut
+
     }
 
     return (
@@ -51,14 +88,23 @@ const GameTable = ({
                 {largeBoard.map((row, rowIndex) => (
                     <div key={rowIndex} className="row">
                         {row.map((cell, cellIndex) => (
-                            <div key={cellIndex} className="cell">
-                                {cell}---{isSlotAvailable(rowIndex,cellIndex)?"true":"false"}
-                            </div>
+                            isSlotAvailable(rowIndex, cellIndex) ?
+                                <div key={cellIndex}
+                                     className={"availableCell"}
+                                     onClick={() => rabbitPut?selectSlotForSwap(rowIndex,cellIndex):selectSlot(rowIndex, cellIndex)}>
+                                    {selectedSlot && (rowIndex===selectedSlot.coordX && cellIndex===selectedSlot.coordY)? selectedCard:cell}
+                                </div> :
+                                <div key={cellIndex}
+                                     className={"cell"}>
+                                    {selectedSlot && (rowIndex===selectedSlot.coordX && cellIndex===selectedSlot.coordY)? selectedCard:cell}
+                                </div>
+
                         ))}
                     </div>
                 ))}
             </div>
-
+            {rabbitPut&&<button onClick={swapCards}>select cards to swap</button>}
+            {rabbitPut&&<h3>you can select slots to swap</h3>}
             {/* Rectangular Panels */}
             <div className="hand-container">
                 {hand.map((card, index) => (
@@ -67,8 +113,8 @@ const GameTable = ({
                     }} selected={selectedCardIndex === index}/>
                 ))}
             </div>
-            <button disabled={!moveCompleted} onClick={onSubmitMove}>submit move</button>
-            <button>cancel</button>
+            <button disabled={isSubmitMoveAvailable()} onClick={()=>onSubmitMove(selectedCard,selectedSlot)}>submit move</button>
+            <button onClick={cancelMove}>cancel</button>
         </div>
     );
 };
