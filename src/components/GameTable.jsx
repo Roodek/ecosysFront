@@ -16,6 +16,8 @@ const GameTable = ({
     const [selectedSlot, setSelectedSlot] = useState(null)
     const [availableSlots, setAvailableSlots] = useState([])
     const [rabbitPut, setRabbitPut] = useState(false)
+    const [swappedSlots, setSwappedSlots] = useState([])
+    const [swapButtonVisible, setSwapButtonVisible] = useState(false)
 
     const selectCard = (card, index) => {
         setSelectedCardIndex(index)
@@ -24,43 +26,61 @@ const GameTable = ({
         setSelectedSlot(null)
         setCardPut(false)
         setRabbitPut(false)
+        setSwapButtonVisible(false)
     }
     const selectSlot = (x, y) => {
-        setSelectedSlot({coordX:x,coordY: y});
+        setSelectedSlot({coordX: x, coordY: y});
         setCardPut(true)
-        if(selectedCard==="RABBIT"){
-            setRabbitPut(true)
-        }else{
-            setRabbitPut(false)
+        if (selectedCard === "RABBIT") {
+            setSwapButtonVisible(true)
         }
     }
-    const selectSlotForSwap = (x,y) =>{
-        console.log(JSON.stringify({coordX:x,coordY:y}));
+    const selectSlotForSwap = (x, y) => {
+        const slot = {coordX: x, coordY: y}
+        const slotIndex = swappedSlots.findIndex(it=>it.coordX===slot.coordX&&it.coordY===slot.coordY)
+        if(slotIndex !== -1) {
+            swappedSlots.splice(slotIndex,1)
+        }else {
+            if (swappedSlots.length === 2) {
+                swappedSlots.shift()
+            }
+            swappedSlots.push(slot)
+        }
+        console.log(swappedSlots)
+
     }
-    const swapCards = () =>{
+    const swappedSlotsContains = (x,y) => {
+        return swappedSlots.includes({coordX: x, coordY: y})
+    }
+    const swapCards = () => {
+        setRabbitPut(true)
         var slots = [selectedSlot]
-        for(var i=0; i<largeBoard.length;i++){
-            for(var j=0;j<largeBoard[i].length;j++){
-                if(largeBoard[i][j]!==null){
-                    slots.push({coordX: i,coordY: j});
+        for (var i = 0; i < largeBoard.length; i++) {
+            for (var j = 0; j < largeBoard[i].length; j++) {
+                if (largeBoard[i][j] !== null) {
+                    slots.push({coordX: i, coordY: j});
                 }
             }
         }
         setAvailableSlots(slots)
     }
-    const cancelMove = () =>{
+    const cancelMove = () => {
         setSelectedSlot(null)
         setSelectedCard(null)
         setCardPut(false)
         setSelectedCardIndex(null)
+        setSwappedSlots([])
         setAvailableSlots([])
+        setSwapButtonVisible(false)
     }
 
     const isSlotAvailable = (x, y) => {
-        return availableSlots.some(obj => obj && ( obj.coordX === x && obj.coordY === y))
+        return availableSlots.some(obj => obj && (obj.coordX === x && obj.coordY === y))
     }
-    const isSubmitMoveAvailable = () =>{
-            return !cardPut
+    const isSubmitMoveDisabled = () => {
+        if(swappedSlots.length==1)
+            return true
+        return !cardPut
 
     }
 
@@ -90,21 +110,21 @@ const GameTable = ({
                         {row.map((cell, cellIndex) => (
                             isSlotAvailable(rowIndex, cellIndex) ?
                                 <div key={cellIndex}
-                                     className={"availableCell"}
-                                     onClick={() => rabbitPut?selectSlotForSwap(rowIndex,cellIndex):selectSlot(rowIndex, cellIndex)}>
-                                    {selectedSlot && (rowIndex===selectedSlot.coordX && cellIndex===selectedSlot.coordY)? selectedCard:cell}
+                                     className={swappedSlotsContains(rowIndex,cellIndex)?"swapCellSelected":"availableCell"}
+                                     onClick={() => rabbitPut ? selectSlotForSwap(rowIndex, cellIndex) : selectSlot(rowIndex, cellIndex)}>
+                                    {selectedSlot && (rowIndex === selectedSlot.coordX && cellIndex === selectedSlot.coordY) ? selectedCard : cell}
                                 </div> :
                                 <div key={cellIndex}
                                      className={"cell"}>
-                                    {selectedSlot && (rowIndex===selectedSlot.coordX && cellIndex===selectedSlot.coordY)? selectedCard:cell}
+                                    {selectedSlot && (rowIndex === selectedSlot.coordX && cellIndex === selectedSlot.coordY) ? selectedCard : cell}
                                 </div>
 
                         ))}
                     </div>
                 ))}
             </div>
-            {rabbitPut&&<button onClick={swapCards}>select cards to swap</button>}
-            {rabbitPut&&<h3>you can select slots to swap</h3>}
+            {swapButtonVisible && <button onClick={swapCards}>select cards to swap</button>}
+            {swapButtonVisible && <h3>you can select slots to swap</h3>}
             {/* Rectangular Panels */}
             <div className="hand-container">
                 {hand.map((card, index) => (
@@ -113,7 +133,9 @@ const GameTable = ({
                     }} selected={selectedCardIndex === index}/>
                 ))}
             </div>
-            <button disabled={isSubmitMoveAvailable()} onClick={()=>onSubmitMove(selectedCard,selectedSlot)}>submit move</button>
+            <button disabled={isSubmitMoveDisabled()} onClick={() => onSubmitMove(selectedCard, selectedSlot, swappedSlots)}>submit
+                move
+            </button>
             <button onClick={cancelMove}>cancel</button>
         </div>
     );

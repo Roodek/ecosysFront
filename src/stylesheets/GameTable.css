@@ -47,10 +47,28 @@
     text-align: center;
     cursor: pointer;
 }
+.large-board .swapCellSelected {
+    width: 60px;
+    height: 60px;
+    background-color: #efe680;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #9fae1c;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.large-board .swapCellSelected:hover {
+    background-color: #e8df94;
+    border: 3px solid #9fae4f;
+}
+
 .large-board .availableCell:hover {
     background-color: #b7e497;
     border: 3px solid #527849;
-
 }
 
 .large-board .cell {

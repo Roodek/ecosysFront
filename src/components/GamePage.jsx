@@ -127,8 +127,10 @@ const GamePage = () => {
             })
             .catch(error => console.log(error));
     }
-    const submitMove = (card, selectedSlot) =>{
-        console.log("move submitted: "+card+' - '+ JSON.stringify(selectedSlot))
+    const submitMove = (card, selectedSlot, swappedCards) => {
+        console.log(
+            "move submitted: " + card + ' - ' + JSON.stringify(selectedSlot) + ' swappedCards: ' + JSON.stringify(swappedCards)
+        )
     }
     return (
         <div>
@@ -141,7 +143,8 @@ const GamePage = () => {
                         <button disabled={game.players.length < 3} onClick={startGame}>start game</button>}
                     <button onClick={handleBeforeLeave}>leave</button>
                 </div>}
-                {game && game.turn > 0 && <GameTable hand={hand} largeBoard={playerBoard} smallBoards={opponentBoards} onSubmitMove={submitMove} availableMoves={availableMoves}/>}
+                {game && game.turn > 0 && <GameTable hand={hand} largeBoard={playerBoard} smallBoards={opponentBoards}
+                                                     onSubmitMove={submitMove} availableMoves={availableMoves}/>}
             </div>
         </div>
     )
