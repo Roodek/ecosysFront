@@ -121,13 +121,41 @@ const GamePage = () => {
                 body: move
             })
             .then(response => response.json())
-            .then(game => {
-                console.log(game);
-                setGame(game)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(error => console.log(error));
+    }
+    const rabbitSwap = (move) => {
+        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/swapMove',
+            {
+                method: 'POST', // Specify the HTTP method
+                headers: {
+                    'Content-Type': 'application/json', // Set the appropriate headers, such as content type
+                    // Add other headers if needed, like Authorization
+                },
+                body: move
+            })
+            .then(response => response.json())
+            .then(res => {
+                console.log(res);
             })
             .catch(error => console.log(error));
     }
     const submitMove = (card, selectedSlot, swappedCards) => {
+        if (swappedCards.length === 0) {
+            playCard(
+                {
+                    cardType: card,
+                    slot: selectedSlot
+                })
+        } else {
+            rabbitSwap({
+                rabbitSlot:selectedSlot,
+                slotToSwap1:swappedCards[0],
+                slotToSwap2:swappedCards[1]
+            })
+        }
         console.log(
             "move submitted: " + card + ' - ' + JSON.stringify(selectedSlot) + ' swappedCards: ' + JSON.stringify(swappedCards)
         )

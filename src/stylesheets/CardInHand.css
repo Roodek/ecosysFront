@@ -6,6 +6,10 @@
     border-radius: 4px;
     font-size: small;
 }
+.card:hover{
+    cursor: pointer;
+    background-color: #9ed974;
+}
 .selectedCard{
     width: 75px;
     height: 75px;
