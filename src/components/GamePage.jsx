@@ -54,17 +54,20 @@ const GamePage = () => {
     }, [])
 
     const fetchGameForPlayer = () => {
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/' + localStorage.getItem('playerID'))
+        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID'))
             .then(response => response.json())
             .then(game => {
-                console.log(game);
-                setGame(game)
-                const player = game.players.find(player => player._id === localStorage.getItem('playerID'))
-                setPlayerBoard(processBoard(player.board))
-                setOpponentBoards(game.players.filter(player => player._id !== localStorage.getItem('playerID'))
-                    .map(opponent => processBoard(opponent.board)))
+                processGameResponse(game)
             })
             .catch(error => console.log(error));
+    }
+    const processGameResponse = (gameResponse) => {
+        console.log(gameResponse)
+        setGame(gameResponse)
+        const player = gameResponse.players.find(player => player._id === localStorage.getItem('playerID'))
+        setPlayerBoard(processBoard(player.board))
+        setOpponentBoards(gameResponse.players.filter(player => player._id !== localStorage.getItem('playerID'))
+            .map(opponent => processBoard(opponent.board)))
     }
     const fetchAvailableMovesForPlayer = () => {
         fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/availableMoves')
@@ -108,7 +111,8 @@ const GamePage = () => {
         }
     }
     const reactToMessage = (messageBody) => {
-        console.log(messageBody)//todo process message accordingly
+        fetchGameForPlayer()
+        console.log('got message: ' + messageBody)//todo process message accordingly
     }
     const playCard = (move) => {
         fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/putCard',
@@ -145,16 +149,16 @@ const GamePage = () => {
     const submitMove = (card, selectedSlot, swappedCards) => {
         if (swappedCards.length === 0) {
             playCard(
-                {
+                JSON.stringify({
                     cardType: card,
                     slot: selectedSlot
-                })
+                }))
         } else {
-            rabbitSwap({
+            rabbitSwap(JSON.stringify({
                 rabbitSlot:selectedSlot,
                 slotToSwap1:swappedCards[0],
                 slotToSwap2:swappedCards[1]
-            })
+            }))
         }
         console.log(
             "move submitted: " + card + ' - ' + JSON.stringify(selectedSlot) + ' swappedCards: ' + JSON.stringify(swappedCards)

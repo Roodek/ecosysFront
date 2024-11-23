@@ -115,7 +115,7 @@ const GameTable = ({
                         {board.map((row, rowIndex) => (
                             <div key={rowIndex} className="row">
                                 {row.map((cell, cellIndex) => (
-                                    <div key={cellIndex} className="cell">
+                                    cell && <div key={cellIndex} className="cell">
                                         {cell}
                                     </div>
                                 ))}
@@ -140,7 +140,7 @@ const GameTable = ({
             {swapButtonVisible && <button onClick={swapCards}>select cards to swap</button>}
             {swapButtonVisible && <h3>you can select slots to swap</h3>}
             <div className="hand-container">
-                {hand.map((card, index) => (
+                {hand && hand.map((card, index) => (
                     <CardInHand key={index} card={card} onClick={() => {
                         selectCard(card, index)
                     }} selected={selectedCardIndex === index}/>
