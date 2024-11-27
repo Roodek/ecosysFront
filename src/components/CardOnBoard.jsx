@@ -11,6 +11,8 @@ const CardOnBoard = ({card, onClick, state}) => {
                 return "available-cell"
             case "SELECTED":
                 return "selected-cell"
+            case "CARD_PUT":
+                return "submitted-cell"
             default:
                 return "cell"
         }

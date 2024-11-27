@@ -3,6 +3,7 @@ import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import GameTable from "./GameTable";
+import "../stylesheets/GamePage.css"
 
 const GamePage = () => {
     const location = useLocation();
@@ -13,7 +14,7 @@ const GamePage = () => {
     const [hand, setHand] = useState(null);
     const [playerBoard, setPlayerBoard] = useState({});
     const [opponentBoards, setOpponentBoards] = useState({});
-    const [joining, setJoining] = useState(false);
+    const [moveSelected, setMoveSelected] = useState({});
     const client = useRef(null); // Define client as a ref
     const [availableMoves, setAvailableMoves] = useState([]);
 
@@ -21,7 +22,6 @@ const GamePage = () => {
         window.addEventListener("beforeunload", handleBeforeLeave)
         window.addEventListener("popstate", handleBeforeLeave)
         fetchGameForPlayer()
-        fetchAvailableMovesForPlayer()
 
         client.current = new Client({
             brokerURL: process.env.REACT_APP_WS_URL,
@@ -58,28 +58,35 @@ const GamePage = () => {
             .then(response => response.json())
             .then(game => {
                 processGameResponse(game)
-            })
+                if (game.turn > 0) {
+                    fetchAvailableMovesForPlayer()
+                }
+            }).then(() => {
+
+        })
             .catch(error => console.log(error));
     }
     const processGameResponse = (gameResponse) => {
-        console.log(gameResponse)
         setGame(gameResponse)
         const player = gameResponse.players.find(player => player._id === localStorage.getItem('playerID'))
         setPlayerBoard(processBoard(player.board))
+        setMoveSelected(player.selectedMove)
         setOpponentBoards(gameResponse.players.filter(player => player._id !== localStorage.getItem('playerID'))
-            .map(opponent => processBoard(opponent.board)))
+            .map(opponent => {
+                return {
+                    name: opponent.name,
+                    board: processBoard(opponent.board)
+                }
+            }))
     }
     const fetchAvailableMovesForPlayer = () => {
-        if(game && game.turn>0) {
-            fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/availableMoves')
-                .then(response => response.json())
-                .then(possibleMoves => {
-                    setHand(possibleMoves.cardsInHand.map(card => card.cardType))
-                    setAvailableMoves(possibleMoves)
-                })
-                .catch(error => console.log(error));
-        }
-
+        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/availableMoves')
+            .then(response => response.json())
+            .then(possibleMoves => {
+                setHand(possibleMoves.cardsInHand.map(card => card.cardType))
+                setAvailableMoves(possibleMoves)
+            })
+            .catch(error => console.log(error));
     }
 
     const processBoard = (board) => {
@@ -95,25 +102,44 @@ const GamePage = () => {
             //     JSON.stringify(data))
             //localStorage.removeItem('playerID')
         }
+        // navigator.sendBeacon(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
+        //         JSON.stringify(data))
+        // localStorage.removeItem('playerID')
+        navigate('/');
+    }
+    const leaveGame = () => {
+        const data = {
+            playerID: localStorage.getItem('playerID')
+        }
+        navigator.sendBeacon(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
+            JSON.stringify(data))
+        localStorage.removeItem('playerID')
         navigate('/');
     }
 
     const startGame = () => {
         console.log(game)
+        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/start',
+            {
+                method: 'POST', // Specify the HTTP method
+                headers: {
+                    'Content-Type': 'application/json', // Set the appropriate headers, such as content type
+                    // Add other headers if needed, like Authorization
+                }
+            })
+            .catch(error => console.log(error));
     }
 
     const connectToGameSocket = () => {
-        if (client.status === 'CONNECTED') {
-            client.current.subscribe('/topic/games/' + gameID, (message) => {
-                const messageBody = JSON.parse(message.body);
-
-                reactToMessage(messageBody)
-                fetchGameForPlayer()
-            });
-        }
+        client.current.subscribe('/topic/games/' + gameID, (message) => {
+            const messageBody = JSON.parse(message.body);
+            reactToMessage(JSON.stringify(messageBody))
+            fetchGameForPlayer()
+        });
     }
+
     const reactToMessage = (messageBody) => {
-        fetchGameForPlayer()
+        //fetchGameForPlayer()
         console.log('got message: ' + messageBody)//todo process message accordingly
     }
     const playCard = (move) => {
@@ -129,6 +155,7 @@ const GamePage = () => {
             .then(response => response.json())
             .then(res => {
                 console.log(res);
+                processGameResponse(res)
             })
             .catch(error => console.log(error));
     }
@@ -145,6 +172,7 @@ const GamePage = () => {
             .then(response => response.json())
             .then(res => {
                 console.log(res);
+                processGameResponse(res)
             })
             .catch(error => console.log(error));
     }
@@ -157,14 +185,17 @@ const GamePage = () => {
                 }))
         } else {
             rabbitSwap(JSON.stringify({
-                rabbitSlot:selectedSlot,
-                slotToSwap1:swappedCards[0],
-                slotToSwap2:swappedCards[1]
+                rabbitSlot: selectedSlot,
+                slotToSwap1: swappedCards[0],
+                slotToSwap2: swappedCards[1]
             }))
         }
         console.log(
             "move submitted: " + card + ' - ' + JSON.stringify(selectedSlot) + ' swappedCards: ' + JSON.stringify(swappedCards)
         )
+    }
+    const processDBBoard = () => {
+        return playerBoard && playerBoard[0].length === 0 ? [[null]] : playerBoard
     }
     return (
         <div>
@@ -173,12 +204,16 @@ const GamePage = () => {
                     <h1>Game: {gameID}</h1>
                     <h2>host: {game.players && game.players[0].name}</h2>
                     <h3>players: {game.players && game.players.map(player => player.name).join(", ")}</h3>
-                    {game.players && game.players.length > 0 && game.players[0].playerID === localStorage.getItem('playerID') &&
+                    {game.players && game.players.length > 0 && game.players[0]._id === localStorage.getItem('playerID') &&
                         <button disabled={game.players.length < 3} onClick={startGame}>start game</button>}
-                    <button onClick={handleBeforeLeave}>leave</button>
+                    <button onClick={leaveGame}>leave</button>
                 </div>}
-                {game && game.turn > 0 && <GameTable hand={hand} largeBoard={playerBoard} smallBoards={opponentBoards}
-                                                     onSubmitMove={submitMove} availableMoves={availableMoves}/>}
+            </div>
+            <div className={"game-table"}>
+                <div className={"game"}>{game && game.turn > 0 && hand &&
+                    <GameTable hand={hand} largeBoard={processDBBoard()} opponents={opponentBoards}
+                               onSubmitMove={submitMove} availableMoves={availableMoves} moveSelected={moveSelected}/>}
+                </div>
             </div>
         </div>
     )
@@ -193,6 +228,7 @@ const styles = {
         cursor: 'pointer',
         transition: 'background-color 0.3s',
         backgroundColor: '#34db5e',
-    }
+    },
+
 }
 export default GamePage;

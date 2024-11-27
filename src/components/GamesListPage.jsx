@@ -28,7 +28,7 @@ const GamesListPage = () => {
             client.current.subscribe('/topic/games', (message) => {
                 const messageBody = JSON.parse(message.body);
                 fetchGames()
-                console.log("message got")
+                console.log("message got: "+ messageBody)
                 setMessages((prevMessages) => [...prevMessages, messageBody]);
             });
         };
@@ -98,8 +98,10 @@ const GamesListPage = () => {
                 console.error('Error:', error); // Handle any errors
             });
     }
-    const joinGame = (gameID) => {
-        if(localStorage.getItem('playerID')==null) {
+    const joinGame = (players, gameID) => {
+        if(localStorage.getItem('playerID') && players.map(player=>player._id).includes(localStorage.getItem('playerID'))) {
+            goToGamePage(gameID)
+        }else {
             fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/join', {
                 method: 'POST', // Specify the HTTP method
                 headers: {
@@ -118,20 +120,17 @@ const GamesListPage = () => {
                 })
                 .then(data => {
                     console.log('Success:', data); // Handle the parsed data
-                    localStorage.setItem('playerID',data)
-                    localStorage.setItem('playerName',playerName.toString())
+                    localStorage.setItem('playerID', data)
+                    localStorage.setItem('playerName', playerName.toString())
                     goToGamePage(gameID)
                 })
                 .catch(error => {
                     console.error('Error:', error); // Handle any errors
                 });
         }
-        else{
-         goToGamePage(gameID)
-        }
     }
     const goToGamePage = (gameID) => {
-        navigate('/game/'+gameID, {
+        navigate('/game/' + gameID, {
             state: {
                 playerName: playerName
             }
@@ -142,15 +141,15 @@ const GamesListPage = () => {
         <div>
             <h1>Games</h1>
             <h3>Enter you name:</h3><input type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
-            <ul style={playerName.length > 0 ? styles.list : styles.listDisabled}>
+            <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (
-                    <li key={index}
-                        style={playerName.length > 0 && game.players.length < 6 ? styles.list : styles.listDisabled}>
+                    <div key={index}
+                        style={playerName.length > 0 && game.players.length < 6 && game.turn===0 ? styles.list : styles.listDisabled}>
                         <GameListEntry numberOfPayers={String(game.players.length)}
                                        playerNames={game.players.map(player => player.name).join(", ")}
-                                       onClick={() => joinGame(game.id)}/></li>
+                                       onClick={() => joinGame(game.players,game.id)}/></div>
                 ))}
-            </ul>
+            </div>
             <button disabled={playerName.length === 0} onClick={createNewGame}>create new game</button>
             <button onClick={connectToTargetTopic}>connect to target topic</button>
             <button onClick={sendMessage}>Send Message</button>

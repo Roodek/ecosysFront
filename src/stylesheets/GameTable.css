@@ -16,6 +16,12 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+
+}
+.opponent-board {
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 0.5rem;
 }
 
 .row {
@@ -92,3 +98,37 @@
     border: 1px solid #000;
     font-size: 16px;
 }
+
+/* Styling for the game table */
+.action-panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border: 4px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden; /* Ensure the overlay fits perfectly */
+}
+
+/* The overlay to disable and dim the action-panel */
+.game-disabled-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 101%;
+    height: 100%;
+    background-color: rgba(244, 118, 122, 0.5); /* Dim effect */
+    z-index: 10;
+    border-radius: 4px;
+}
+
+/* Add pointer-events to prevent interactions with the game content */
+.action-panel.disabled .game-disabled-overlay {
+    pointer-events: auto; /* Blocks user actions */
+}
+
+.game-panel {
+    position: relative;
+    z-index: 1;
+}
+

@@ -36,6 +36,18 @@
     text-align: center;
     cursor: pointer;
 }
+.submitted-cell {
+    width: 60px;
+    height: 60px;
+    background-color: #84af56;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #d9e46b;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+}
 
 .selected-cell:hover {
     background-color: #e8df94;
