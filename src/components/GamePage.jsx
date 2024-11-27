@@ -70,13 +70,15 @@ const GamePage = () => {
             .map(opponent => processBoard(opponent.board)))
     }
     const fetchAvailableMovesForPlayer = () => {
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/availableMoves')
-            .then(response => response.json())
-            .then(possibleMoves => {
-                setHand(possibleMoves.cardsInHand.map(card => card.cardType))
-                setAvailableMoves(possibleMoves)
-            })
-            .catch(error => console.log(error));
+        if(game && game.turn>0) {
+            fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/availableMoves')
+                .then(response => response.json())
+                .then(possibleMoves => {
+                    setHand(possibleMoves.cardsInHand.map(card => card.cardType))
+                    setAvailableMoves(possibleMoves)
+                })
+                .catch(error => console.log(error));
+        }
 
     }
 

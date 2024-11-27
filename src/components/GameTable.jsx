@@ -75,7 +75,7 @@ const GameTable = ({
     }
 
     const getSlotState = (x, y) => {
-        if (swappedSlotsContains(x, y)) {
+        if (swappedSlotsContains(x, y) || (selectedSlot && selectedSlot.coordX === x && selectedSlot.coordY === y)) {
             return "SELECTED"
         }
         return availableSlots.some(obj => obj && (obj.coordX === x && obj.coordY === y)) ?
@@ -105,6 +105,9 @@ const GameTable = ({
     const isSlotAvailable = (x, y) => {
         return availableSlots.some(obj => obj && (obj.coordX === x && obj.coordY === y))
     }
+
+    const removeFirstOccurrence = (array, element) =>
+        (array.indexOf(element) !== -1 ? array.splice(array.indexOf(element), 1) : array);
 
     return (
         <div className="game-table">
@@ -140,7 +143,7 @@ const GameTable = ({
             {swapButtonVisible && <button onClick={swapCards}>select cards to swap</button>}
             {swapButtonVisible && <h3>you can select slots to swap</h3>}
             <div className="hand-container">
-                {hand && hand.map((card, index) => (
+                {hand && removeFirstOccurrence(hand,selectedCard).map((card, index) => (
                     <CardInHand key={index} card={card} onClick={() => {
                         selectCard(card, index)
                     }} selected={selectedCardIndex === index}/>
