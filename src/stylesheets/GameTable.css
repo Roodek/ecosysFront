@@ -117,7 +117,7 @@
     left: 0;
     width: 101%;
     height: 100%;
-    background-color: rgba(244, 118, 122, 0.5); /* Dim effect */
+    background-color: rgba(197, 196, 196, 0.5); /* Dim effect */
     z-index: 10;
     border-radius: 4px;
 }

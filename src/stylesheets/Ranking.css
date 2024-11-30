@@ -1,52 +1,66 @@
-
 .ranking-table {
+    display: flex;
+    flex-direction: column; /* Stack rows vertically */
     width: 100%;
-    padding: 10px;
     border: 5px solid #ddd;
-    border-radius: 20px;
+    border-radius: 20px;  /* Rounded corners for the table */
     margin-bottom: 10px;
-    transition: background-color 0.3s;
     background-color: #c7fbd5;
-    display: grid;
+    overflow: hidden; /* Hide overflow to create the cut corner effect */
 }
-.name{
-    width: 5%;
+
+/* Header Row */
+.ranking-header {
+    display: flex;
+    background-color: #34db5e;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+    margin-top: -5px; /* Negative margin to align within the rounded corners */
+    margin-left: -5px; /* Align with the rounded corners of the table */
+    margin-right: -5px;
     padding: 10px;
-    align-content: center;
+    border-radius: 15px 15px 0 0; /* Round the top corners of the header */
 }
-.category{
-    width: 5%;
+
+/* Individual Cells (Header and Data Rows) */
+.header-cell, .ranking-slot > div {
+    flex: 1;
+    text-align: center;
     padding: 10px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    overflow: hidden;
 }
-.sum-points{
+
+/* Data Rows */
+.ranking-slot {
+    display: flex;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    margin-left: -5px; /* Negative margin to align within the rounded corners */
+    margin-right: -5px; /* Align with the rounded corners of the table */
+}
+
+.ranking-slot:first-child {
+    border-top-left-radius: 20px; /* Rounded top-left corner */
+    border-top-right-radius: 20px; /* Rounded top-right corner */
+}
+
+.ranking-slot:last-child {
+    border-bottom-left-radius: 20px; /* Rounded bottom-left corner */
+    border-bottom-right-radius: 20px; /* Rounded bottom-right corner */
+}
+
+.name, .sum-points, .card-points {
+    flex: 1;
+    text-align: center;
     padding: 10px;
-    align-content: center;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+.card-points {
     background-color: rgba(82, 120, 73, 0.61);
-    border-radius: 10px;
-}
-.ranking-slot{
-    padding: 10px;
-    display: inline-flex;
-    justify-content: space-around;
-    border: 6px solid #34db5e;
-    border-top: 3px solid #34db5e;
-    border-bottom: 3px solid #34db5e;
-}
-.ranking-slot:first-child{
-    padding: 10px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    padding-bottom: 5px;
-    border-top: 6px solid #34db5e;
-}
-.ranking-slot:last-child{
-    padding: 10px;
-    padding-top: 5px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-bottom: 6px solid #34db5e;
-}
-.card-points{
-    display: inline-flex;
-    justify-content: space-around;
+    border-radius: 5px;
+    font-weight: bold;
 }

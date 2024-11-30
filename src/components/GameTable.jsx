@@ -163,7 +163,7 @@ const GameTable = ({
                     </button>
                     <button onClick={cancelMove}>cancel</button>
                 </div>
-                {moveSelected && <div className={"game-disabled-overlay"}/>}
+                {(moveSelected || largeBoard.flat().filter(elem=>elem!=null).length===20) && <div className={"game-disabled-overlay"}/>}
             </div>
         </div>
     );
