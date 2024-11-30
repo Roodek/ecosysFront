@@ -4,6 +4,7 @@ import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import GameTable from "./GameTable";
 import "../stylesheets/GamePage.css"
+import Ranking from "./Ranking";
 
 const GamePage = () => {
     const location = useLocation();
@@ -214,6 +215,11 @@ const GamePage = () => {
                     <GameTable hand={hand} largeBoard={processDBBoard()} opponents={opponentBoards}
                                onSubmitMove={submitMove} availableMoves={availableMoves} moveSelected={moveSelected}/>}
                 </div>
+                {/*{game && game.turn > 20 && game.players.map(player =>*/}
+                {/*    <div>*/}
+                {/*        {JSON.stringify(player.finalGeneralPointCount)}*/}
+                {/*    </div>)}*/}
+                {game && game.turn>20 && <Ranking players={game.players}/>}
             </div>
         </div>
     )

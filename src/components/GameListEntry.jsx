@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const GameListEntry = ({ numberOfPayers='0', playerNames='No description provided', onClick=() => {} }) => {
+const GameListEntry = ({ numberOfPayers='0',gameID='', playerNames='No description provided', onClick=() => {} }) => {
     return (
         <div className="list-entry" onClick={onClick} style={styles.entry}>
             <h3 style={styles.title}>Number of players: {numberOfPayers}</h3>
+            <p>gameID: {gameID}</p>
             <p style={styles.description}> players: {playerNames}</p>
         </div>
     );
@@ -13,6 +14,7 @@ const GameListEntry = ({ numberOfPayers='0', playerNames='No description provide
 // Define PropTypes to validate props
 GameListEntry.propTypes = {
     numberOfPayers: PropTypes.string.isRequired,
+    gameID: PropTypes.string.isRequired,
     playerNames: PropTypes.string,
     onClick: PropTypes.func
 };

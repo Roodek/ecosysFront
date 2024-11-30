@@ -72,7 +72,7 @@ const GamesListPage = () => {
         console.log("fetchgames")
         fetch(process.env.REACT_APP_API_URL + '/games')
             .then(response => response.json())
-            .then(games => setGames(games))
+            .then(games => {setGames(games);console.log(games)})
             .catch(error => console.log(error));
     }
 
@@ -99,7 +99,7 @@ const GamesListPage = () => {
             });
     }
     const joinGame = (players, gameID) => {
-        if(localStorage.getItem('playerID') && players.map(player=>player._id).includes(localStorage.getItem('playerID'))) {
+        if(localStorage.getItem('playerID') && players && players.map(player=>player._id).includes(localStorage.getItem('playerID'))) {
             goToGamePage(gameID)
         }else {
             fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/join', {
@@ -146,6 +146,7 @@ const GamesListPage = () => {
                     <div key={index}
                         style={playerName.length > 0 && game.players.length < 6 && game.turn===0 ? styles.list : styles.listDisabled}>
                         <GameListEntry numberOfPayers={String(game.players.length)}
+                                       gameID={game.id}
                                        playerNames={game.players.map(player => player.name).join(", ")}
                                        onClick={() => joinGame(game.players,game.id)}/></div>
                 ))}

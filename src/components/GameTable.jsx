@@ -49,9 +49,7 @@ const GameTable = ({
             }
             setSwappedSlots([...swappedSlots, slot])
         }
-        console.log("cdc")
     }
-
 
     const swapCards = () => {
         setRabbitPut(true)
@@ -105,9 +103,6 @@ const GameTable = ({
     const isSlotAvailable = (x, y) => {
         return availableSlots.some(obj => obj && (obj.coordX === x && obj.coordY === y))
     }
-
-    const removeFirstOccurrence = (array, element) =>
-        (array.indexOf(element) !== -1 ? array.splice(array.indexOf(element), 1) : array);
 
     return (
         <div className="game-table">
