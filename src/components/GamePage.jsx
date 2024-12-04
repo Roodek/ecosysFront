@@ -112,10 +112,24 @@ const GamePage = () => {
         const data = {
             playerID: localStorage.getItem('playerID')
         }
-        navigator.sendBeacon(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
-            JSON.stringify(data))
-        localStorage.removeItem('playerID')
-        navigate('/');
+        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
+            {
+                method: 'POST', // Specify the HTTP method
+                headers: {
+                    'Content-Type': 'application/json', // Set the appropriate headers, such as content type
+                    // Add other headers if needed, like Authorization
+                },
+                body: JSON.stringify(data)
+            })
+            .then(()=>{
+                localStorage.removeItem('playerID')
+                navigate('/')
+            })
+            .catch(error => console.log(error));
+        // navigator.sendBeacon(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
+        //     JSON.stringify(data))
+        // localStorage.removeItem('playerID')
+        // navigate('/');
     }
 
     const startGame = () => {
@@ -215,10 +229,6 @@ const GamePage = () => {
                     <GameTable hand={hand} largeBoard={processDBBoard()} opponents={opponentBoards}
                                onSubmitMove={submitMove} availableMoves={availableMoves} moveSelected={moveSelected}/>}
                 </div>
-                {/*{game && game.turn > 20 && game.players.map(player =>*/}
-                {/*    <div>*/}
-                {/*        {JSON.stringify(player.finalGeneralPointCount)}*/}
-                {/*    </div>)}*/}
                 {game && game.turn>20 && <Ranking players={game.players}/>}
             </div>
         </div>

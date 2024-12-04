@@ -152,10 +152,10 @@ const GamesListPage = () => {
                 ))}
             </div>
             <button disabled={playerName.length === 0} onClick={createNewGame}>create new game</button>
-            <button onClick={connectToTargetTopic}>connect to target topic</button>
-            <button onClick={sendMessage}>Send Message</button>
-            <input type={"text"} onChange={(e) => setTopicID(e.target.value)}/>
-            <button onClick={sendTargetedMessage}>Send target</button>
+            {/*<button onClick={connectToTargetTopic}>connect to target topic</button>*/}
+            {/*<button onClick={sendMessage}>Send Message</button>*/}
+            {/*<input type={"text"} onChange={(e) => setTopicID(e.target.value)}/>*/}
+            {/*<button onClick={sendTargetedMessage}>Send target</button>*/}
             <ul>
                 {messages.map((msg, index) => (
                     <li key={index}>{msg.from}: {msg.content}</li>
