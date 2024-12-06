@@ -4,6 +4,7 @@ import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import GameListEntry from "./GameListEntry";
 import {useNavigate} from 'react-router-dom';
+import '../stylesheets/GamesListPage.css'
 
 const GamesListPage = () => {
     const [games, setGames] = useState([]);
@@ -138,7 +139,7 @@ const GamesListPage = () => {
     };
 
     return (
-        <div>
+        <div className={"game-list"}>
             <h1>Games</h1>
             <h3>Enter you name:</h3><input type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
             <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
