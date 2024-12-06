@@ -5,6 +5,7 @@ import SockJS from 'sockjs-client';
 import GameListEntry from "./GameListEntry";
 import {useNavigate} from 'react-router-dom';
 import '../stylesheets/GamesListPage.css'
+import {Button, Spinner} from "react-bootstrap";
 
 const GamesListPage = () => {
     const [games, setGames] = useState([]);
@@ -13,6 +14,7 @@ const GamesListPage = () => {
     const [playerName, setPlayerName] = useState([]);
     const client = useRef(null); // Define client as a ref
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         client.current = new Client({
@@ -71,10 +73,18 @@ const GamesListPage = () => {
     }
     const fetchGames = () => {
         console.log("fetchgames")
+        setLoading(true);
         fetch(process.env.REACT_APP_API_URL + '/games')
             .then(response => response.json())
-            .then(games => {setGames(games);console.log(games)})
-            .catch(error => console.log(error));
+            .then(games => {
+                setGames(games);
+                console.log(games)
+                setLoading(false)
+            })
+            .catch(error => {
+                setLoading(false)
+                console.log(error)
+            });
     }
 
     const createNewGame = () => {
@@ -142,17 +152,18 @@ const GamesListPage = () => {
         <div className={"game-list"}>
             <h1>Games</h1>
             <h3>Enter you name:</h3><input type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
+            {loading && <Spinner animation="border" variant="success" />}
             <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (
-                    <div key={index}
-                        style={playerName.length > 0 && game.players.length < 6 && game.turn===0 ? styles.list : styles.listDisabled}>
+                    game.turn===0 && <div key={index}
+                        style={playerName.length > 0 && game.players.length < 6 ? styles.list : styles.listDisabled}>
                         <GameListEntry numberOfPayers={String(game.players.length)}
                                        gameID={game.id}
                                        playerNames={game.players.map(player => player.name).join(", ")}
                                        onClick={() => joinGame(game.players,game.id)}/></div>
                 ))}
             </div>
-            <button disabled={playerName.length === 0} onClick={createNewGame}>create new game</button>
+            <Button variant="success" disabled={playerName.length === 0} onClick={createNewGame}>create new game</Button>
             {/*<button onClick={connectToTargetTopic}>connect to target topic</button>*/}
             {/*<button onClick={sendMessage}>Send Message</button>*/}
             {/*<input type={"text"} onChange={(e) => setTopicID(e.target.value)}/>*/}

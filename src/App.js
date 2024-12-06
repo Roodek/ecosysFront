@@ -1,10 +1,25 @@
 import './App.css';
 import MainPage from "./components/MainPage";
+import {useState} from "react";
 
 function App() {
+    const [activeTheme, setActiveTheme] = useState("REGULAR");
+
+    const selectTheme = (theme) =>{
+        localStorage.setItem("theme", theme);
+        setActiveTheme(theme);
+    }
+    const getTheme = () =>{
+        switch(activeTheme){
+            case "PIXEL":
+                return "pixel-style"
+            default:
+                return "regular-style"
+        }
+    }
   return (
-    <div className="App">
-      <MainPage/>
+    <div className={getTheme()}>
+      <MainPage selectTheme={selectTheme}/>
     </div>
   );
 }
