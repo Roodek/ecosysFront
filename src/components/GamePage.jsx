@@ -217,7 +217,7 @@ const GamePage = () => {
             <div className="GameWaitingRoom">
                 {game && game.turn === 0 && <div style={styles.gameWindow}>
                     <h1>Game: {gameID}</h1>
-                    <h2>host: {game.players && game.players[0].name}</h2>
+                    <h2>host: {game.players && game.players[0] && game.players[0].name}</h2>
                     <h3>players: {game.players && game.players.map(player => player.name).join(", ")}</h3>
                     {game.players && game.players.length > 0 && game.players[0]._id === localStorage.getItem('playerID') &&
                         <button disabled={game.players.length < 3} onClick={startGame}>start game</button>}

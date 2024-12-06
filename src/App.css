@@ -3,11 +3,17 @@
 }
 
 .pixel-style{
+  height: 100vh;
   text-align: center;
-  background-color: #9ed974;
+  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url("./themes/pixel/BACKGROUND.webp") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 .regular-style{
+  height: 100vh;
   text-align: center;
 }
 
