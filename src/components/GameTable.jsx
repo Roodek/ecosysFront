@@ -3,7 +3,7 @@ import "../stylesheets/GameTable.css";
 import PropTypes from "prop-types";
 import CardInHand from "./CardInHand";
 import CardOnBoard from "./CardOnBoard";
-import {Col, Container, Row} from "react-bootstrap"; // For styling
+import {Button, Col, Container, Row} from "react-bootstrap"; // For styling
 
 const GameTable = ({
                        opponents,
@@ -169,14 +169,15 @@ const GameTable = ({
                             }} selected={selectedCardIndex === index}/>
                         ))}
                     </div>
-                    <button disabled={isSubmitMoveDisabled()}
+                    <Button disabled={isSubmitMoveDisabled()}
+                            variant={"success"}
                             onClick={() => {
                                 onSubmitMove(selectedCard, selectedSlot, swappedSlots)
                                 cancelMove()
-                            }}>submit
+                            }}>Submit
                         move
-                    </button>
-                    <button onClick={cancelMove}>cancel</button>
+                    </Button>
+                    <Button variant={"danger"} onClick={cancelMove}>Cancel move</Button>
                 </div>
                 {(moveSelected || largeBoard.flat().filter(elem=>elem!=null).length===20) && <div className={"game-disabled-overlay"}/>}
             </div>

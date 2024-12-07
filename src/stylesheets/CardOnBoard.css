@@ -1,7 +1,7 @@
 
 .cell {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
     background-color: rgba(240, 240, 240, 0.19);
     display: flex;
     align-items: center;
@@ -11,8 +11,8 @@
     text-align: center;
 }
 .available-cell {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
     background-color: #9ed974;
     display: flex;
     align-items: center;
@@ -24,8 +24,8 @@
     cursor: pointer;
 }
 .selected-cell {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
     background-color: #efe680;
     display: flex;
     align-items: center;
@@ -37,8 +37,8 @@
     cursor: pointer;
 }
 .submitted-cell {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
     background-color: #84af56;
     display: flex;
     align-items: center;

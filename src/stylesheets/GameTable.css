@@ -30,8 +30,8 @@
 }
 
 .large-board .availableCell {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
     background-color: #9ed974;
     display: flex;
     align-items: center;
@@ -43,8 +43,8 @@
     cursor: pointer;
 }
 .large-board .swapCellSelected {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
     background-color: #efe680;
     display: flex;
     align-items: center;
@@ -67,8 +67,8 @@
 }
 
 .large-board .cell {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
     /*border: 3px solid #ccc;*/
 }
 
