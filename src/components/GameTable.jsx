@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import "../stylesheets/GameTable.css";
 import PropTypes from "prop-types";
 import CardInHand from "./CardInHand";
-import CardOnBoard from "./CardOnBoard"; // For styling
+import CardOnBoard from "./CardOnBoard";
+import {Col, Container, Row} from "react-bootstrap"; // For styling
 
 const GameTable = ({
                        opponents,
@@ -109,14 +110,28 @@ const GameTable = ({
             {/* Top Section: Two Small Boards */}
             <div className="boards-container">
                 {opponents.map((opponent, index) => (
+                    // <Container key={index}>
+                    //     {opponent.board.map((row, rowIndex) => (
+                    //                     <Row key={rowIndex} >
+                    //                         {row.map((cell, cellIndex) => (
+                    //                             <Col key={cellIndex}>
+                    //                                 <div className={"cell"}>{cell}</div>
+                    //                             </Col>
+                    //                         ))}
+                    //                     </Row>
+                    //                 ))}
+                    // </Container>
                     <div className={"opponent-board"} key={index}>
                         <h3>{opponent.name}</h3>
                         <div  className="small-board">
                             {opponent.board.map((row, rowIndex) => (
-                                <div key={rowIndex} className="row">
+                                <div key={rowIndex} className="table-row">
                                     {row.map((cell, cellIndex) => (
                                         <div key={cellIndex} className="cell">
-                                            {cell}
+                                            <CardOnBoard key={'' + rowIndex + cellIndex}
+                                                         card={cell}
+                                                         onClick={() => {}}
+                                                         state={"NONE"}/>
                                         </div>
                                     ))}
                                 </div>
@@ -127,7 +142,7 @@ const GameTable = ({
             </div>
             <div className="large-board">
                 {largeBoard.map((row, rowIndex) => (
-                    <div key={rowIndex} className="row">
+                    <div key={rowIndex} className="table-row">
                         {row.map((cell, cellIndex) =>
                             moveSelected && moveSelected.selectedSlot.coordX === rowIndex && moveSelected.selectedSlot.coordY === cellIndex ?
                                 <CardOnBoard key={'' + rowIndex + cellIndex}

@@ -2,11 +2,11 @@
 .cell {
     width: 60px;
     height: 60px;
-    background-color: #f0f0f0;
+    background-color: rgba(240, 240, 240, 0.19);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #ccc;
+    border: 1px solid rgba(204, 204, 204, 0.51);
     font-size: 14px;
     text-align: center;
 }
@@ -30,7 +30,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #9fae1c;
+    border: 5px solid #00b58d;
     border-radius: 4px;
     font-size: 14px;
     text-align: center;

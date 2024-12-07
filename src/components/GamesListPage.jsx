@@ -109,7 +109,7 @@ const GamesListPage = () => {
                 console.error('Error:', error); // Handle any errors
             });
     }
-    const joinGame = (players, gameID) => {
+    const joinGame = (gameID,players=[]) => {
         if(localStorage.getItem('playerID') && players && players.map(player=>player._id).includes(localStorage.getItem('playerID'))) {
             goToGamePage(gameID)
         }else {
@@ -160,7 +160,7 @@ const GamesListPage = () => {
                         <GameListEntry numberOfPayers={String(game.players.length)}
                                        gameID={game.id}
                                        playerNames={game.players.map(player => player.name).join(", ")}
-                                       onClick={() => joinGame(game.players,game.id)}/></div>
+                                       onClick={() => joinGame(game.id,game.players,)}/></div>
                 ))}
             </div>
             <Button variant="success" disabled={playerName.length === 0} onClick={createNewGame}>create new game</Button>

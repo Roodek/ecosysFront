@@ -1,20 +1,20 @@
-.card{
+.card-in-hand{
     width: 75px;
     height: 75px;
-    padding: 5px;
-    border: 1px solid #000;
+    border: 2px solid #206c01;
     border-radius: 4px;
     font-size: small;
 }
-.card:hover{
+.card-in-hand:hover{
     cursor: pointer;
     background-color: #9ed974;
+    border: 5px
 }
-.selectedCard{
+.selected-card{
     width: 75px;
     height: 75px;
     padding: 5px;
-    border: 1px solid #000;
+    border: 3px solid rgba(82, 120, 73, 0.61);
     border-radius: 4px;
     font-size: small;
     background-color: #9bec4c;

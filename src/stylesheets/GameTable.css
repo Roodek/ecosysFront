@@ -24,22 +24,11 @@
     padding: 0.5rem;
 }
 
-.row {
+.table-row {
     display: flex;
     gap: 5px;
 }
 
-.cell {
-    width: 30px;
-    height: 30px;
-    background-color: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    text-align: center;
-}
 .large-board .availableCell {
     width: 60px;
     height: 60px;

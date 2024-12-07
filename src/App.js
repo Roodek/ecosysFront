@@ -3,7 +3,7 @@ import MainPage from "./components/MainPage";
 import {useState} from "react";
 
 function App() {
-    const [activeTheme, setActiveTheme] = useState(localStorage.getItem("theme")?localStorage.getItem("theme"):"REGULAR");
+    const [activeTheme, setActiveTheme] = useState(localStorage.getItem("theme")?localStorage.getItem("theme"):"PIXEL");
 
     const selectTheme = (theme) =>{
         localStorage.setItem("theme", theme);
