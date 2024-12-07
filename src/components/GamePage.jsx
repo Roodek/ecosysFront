@@ -76,7 +76,8 @@ const GamePage = () => {
             .map(opponent => {
                 return {
                     name: opponent.name,
-                    board: processBoard(opponent.board)
+                    board: processBoard(opponent.board),
+                    selectedMove: opponent.selectedMove
                 }
             }))
     }

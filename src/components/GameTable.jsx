@@ -122,7 +122,7 @@ const GameTable = ({
                     //                 ))}
                     // </Container>
                     <div className={"opponent-board"} key={index}>
-                        <h3>{opponent.name}</h3>
+                        <h3>{opponent.name}</h3>{opponent.selectedMove && <p>MOVE SUBMITTED</p>}
                         <div  className="small-board">
                             {opponent.board.map((row, rowIndex) => (
                                 <div key={rowIndex} className="table-row">
