@@ -1,9 +1,18 @@
 import './App.css';
 import MainPage from "./components/MainPage";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function App() {
     const [activeTheme, setActiveTheme] = useState(localStorage.getItem("theme")?localStorage.getItem("theme"):"PIXEL");
+
+    useEffect(() => {
+        if (localStorage.getItem("theme")) {
+            setActiveTheme(localStorage.getItem("theme"));
+        }else{
+            localStorage.setItem("theme","PIXEL");
+            setActiveTheme("PIXEL");
+        }
+    }, []);
 
     const selectTheme = (theme) =>{
         localStorage.setItem("theme", theme);
