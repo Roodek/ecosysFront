@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/ecosysFront/static/css/main.7b0b6490.css",
-    "main.js": "/ecosysFront/static/js/main.b0e68322.js",
+    "main.css": "/ecosysFront/static/css/main.92f75a8c.css",
+    "main.js": "/ecosysFront/static/js/main.362766fa.js",
     "static/js/488.3edfe2dd.chunk.js": "/ecosysFront/static/js/488.3edfe2dd.chunk.js",
     "static/media/BEE.webp": "/ecosysFront/static/media/BEE.8b47e5ca602f11923dbf.webp",
     "static/media/RIVER.webp": "/ecosysFront/static/media/RIVER.5b836ff1e97b4df236ba.webp",
@@ -16,12 +16,12 @@
     "static/media/FOX.webp": "/ecosysFront/static/media/FOX.c152fdcb8e0a4e895f3d.webp",
     "static/media/FISH.webp": "/ecosysFront/static/media/FISH.7ec5cf22fcdc0537d1de.webp",
     "index.html": "/ecosysFront/index.html",
-    "main.7b0b6490.css.map": "/ecosysFront/static/css/main.7b0b6490.css.map",
-    "main.b0e68322.js.map": "/ecosysFront/static/js/main.b0e68322.js.map",
+    "main.92f75a8c.css.map": "/ecosysFront/static/css/main.92f75a8c.css.map",
+    "main.362766fa.js.map": "/ecosysFront/static/js/main.362766fa.js.map",
     "488.3edfe2dd.chunk.js.map": "/ecosysFront/static/js/488.3edfe2dd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7b0b6490.css",
-    "static/js/main.b0e68322.js"
+    "static/css/main.92f75a8c.css",
+    "static/js/main.362766fa.js"
   ]
 }
