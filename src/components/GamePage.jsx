@@ -1,13 +1,23 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import GameTable from "./GameTable";
 import "../stylesheets/GamePage.css"
 import Ranking from "./Ranking";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import * as PropTypes from "prop-types";
+import ChatComponent from "./ChatComponent";
 
+
+ChatComponent.propTypes = {
+    chatMessages: PropTypes.arrayOf(PropTypes.any),
+    callbackfn: PropTypes.func,
+    onChange: PropTypes.func,
+    value: PropTypes.string,
+    onClick: PropTypes.func
+};
 const GamePage = () => {
-    const location = useLocation();
     const navigate = useNavigate();
     const playerName = localStorage.getItem("playerName");
     const {gameID} = useParams()
@@ -18,12 +28,14 @@ const GamePage = () => {
     const [moveSelected, setMoveSelected] = useState({});
     const client = useRef(null); // Define client as a ref
     const [availableMoves, setAvailableMoves] = useState([]);
+    const [chatMessages, setChatMessages] = useState([]);
+    const [message, setMessage] = useState("");
+    const [chatVisible, setChatVisible] = useState(false);
 
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeLeave)
         window.addEventListener("popstate", handleBeforeLeave)
         fetchGameForPlayer()
-
         client.current = new Client({
             brokerURL: process.env.REACT_APP_WS_URL,
             connectHeaders: {},
@@ -100,13 +112,7 @@ const GamePage = () => {
             const data = {
                 playerID: localStorage.getItem('playerID')
             }
-            // navigator.sendBeacon(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
-            //     JSON.stringify(data))
-            //localStorage.removeItem('playerID')
         }
-        // navigator.sendBeacon(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
-        //         JSON.stringify(data))
-        // localStorage.removeItem('playerID')
         navigate('/');
     }
     const leaveGame = () => {
@@ -122,15 +128,11 @@ const GamePage = () => {
                 },
                 body: JSON.stringify(data)
             })
-            .then(()=>{
+            .then(() => {
                 localStorage.removeItem('playerID')
                 navigate('/')
             })
             .catch(error => console.log(error));
-        // navigator.sendBeacon(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
-        //     JSON.stringify(data))
-        // localStorage.removeItem('playerID')
-        // navigate('/');
     }
 
     const startGame = () => {
@@ -152,6 +154,12 @@ const GamePage = () => {
             reactToMessage(JSON.stringify(messageBody))
             fetchGameForPlayer()
         });
+
+        client.current.subscribe('/topic/games/' + gameID + '/chat', (message) => {
+            const messageBody = JSON.parse(message.body);
+            setChatMessages((prevMessages)=>[...prevMessages, messageBody])
+        });
+
     }
 
     const reactToMessage = (messageBody) => {
@@ -213,6 +221,22 @@ const GamePage = () => {
     const processDBBoard = () => {
         return playerBoard && playerBoard[0].length === 0 ? [[null]] : playerBoard
     }
+    const handleTextChange = (event) => {
+        setMessage(event.target.value)
+    }
+    const sendMessage = () => {
+        const payload = {from: playerName, content: message};
+        if (client.current) {
+            client.current.publish({
+                destination: '/app/games/' + gameID + '/chat',
+                body: JSON.stringify(payload),
+            });
+        }
+        setMessage('')
+    }
+    const showHideChat =()=>{
+        setChatVisible(!chatVisible)
+    }
     return (
         <div>
             <div className="GameWaitingRoom">
@@ -230,8 +254,26 @@ const GamePage = () => {
                     <GameTable hand={hand} largeBoard={processDBBoard()} opponents={opponentBoards}
                                onSubmitMove={submitMove} availableMoves={availableMoves} moveSelected={moveSelected}/>}
                 </div>
-                {game && game.turn>20 && <Ranking players={game.players}/>}
+                {game && game.turn > 20 && <Ranking players={game.players}/>}
             </div>
+            <div className={"chat-container"}>
+                <Button onClick={showHideChat} variant={"warning"} id={"hide-button"}>{chatVisible?"Hide chat":"Show chat"}</Button>
+                {chatVisible && <Container>
+                    {chatMessages.map((chatMessage, messageIndex) => (
+                        <Row key={messageIndex}>
+                            <Col xs={2}>{chatMessage.from}: </Col>
+                            <Col xs={10}> {chatMessage.content}</Col>
+                        </Row>))}
+                </Container>}
+                {chatVisible && <div className={"chat-controls"}>
+                    <Form.Control as="textarea"
+                                  placeholder={"write message here..."}
+                                  onChange={handleTextChange}
+                                  value={message}/>
+                    <Button disabled={message.length === 0} onClick={sendMessage}>Send</Button>
+                </div>}
+            </div>
+            {/*<ChatComponent chatMessages={chatMessages} onChange={handleTextChange} value={message} onClick={sendMessage}/>*/}
         </div>
     )
 };

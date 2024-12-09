@@ -1,0 +1,63 @@
+.chat-container{
+    border: #527849 3px solid;
+    border-radius: 5px;
+    max-width: 500px;
+    min-width: 72px;
+    background-color: rgba(177, 255, 152, 0.55);
+    max-height: 200px;
+    min-height: 44px;
+    block-size: auto;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1000;
+    display: grid;
+    justify-items: end;
+}
+
+.chat-container .container{
+    min-height: 0px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+.chat-container .row{
+    border: #527849 1px solid ;
+    margin: 2px;
+    border-radius: 10px;
+    border-top-left-radius: 0px;
+}
+
+.chat-container .col-10{
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;        /* Hides content that overflows */
+    text-overflow: ellipsis; /* Adds ellipsis (...) if overflow is hidden */
+    white-space: normal;
+    text-align: left;
+}
+
+.chat-controls {
+    display: flex;           /* Align children horizontally */
+    /*gap: 5px;               !* Add space between the textarea and button *!*/
+    align-items: flex-start; /* Align items at the top */
+}
+
+.chat-controls textarea {
+    flex: 1;                 /* Make the textarea take up remaining space */
+    resize: vertical;
+    min-height: 38px;/* Allow vertical resizing if needed */
+    height: 38px;
+}
+
+.chat-controls button {
+    height: auto;            /* Independent height */
+    width: auto;             /* Independent width */
+    align-self: flex-end;
+    border-radius: 5px/* Ensure button aligns with the top of the textarea */
+}
+.chat-container:not(:empty) #hide-button{
+    top: 0px;
+    right: 0px;
+}
+
+
