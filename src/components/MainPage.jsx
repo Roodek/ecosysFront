@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import '../stylesheets/MainPage.css';
 import GamesListPage from "./GamesListPage";
 import {BrowserRouter as Router, Routes, Route, NavLink, HashRouter} from 'react-router-dom';
@@ -11,12 +11,14 @@ import GameListEntry from "./GameListEntry";
 
 
 const MainPage = ({selectTheme}) => {
+    const [currentGameTabVisible, setCurrentGameTabVisible] = useState(!!localStorage.getItem('gameID'));
+
     return (
         <div className="container">
             <HashRouter>
                 <Navbar expand="lg" className="bg-body-tertiary">
                     <Container>
-                        <Navbar.Brand href="#home">Synergies</Navbar.Brand>
+                        <Navbar.Brand as={NavLink} to="/">Synergies</Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="me-auto">
@@ -26,15 +28,16 @@ const MainPage = ({selectTheme}) => {
                                     <NavDropdown.Item onClick={()=>{selectTheme("PIXEL")}}>Pixel</NavDropdown.Item>
                                     <NavDropdown.Item onClick={()=>{selectTheme("REGULAR")}}>Regular</NavDropdown.Item>
                                 </NavDropdown>
+                                {currentGameTabVisible && <Nav.Link as={NavLink} to={'/game/' + localStorage.getItem("gameID")}>CurrentGame</Nav.Link>}
                             </Nav>
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
             <div className="content">
                 <Routes>
-                    <Route path="/" element={<GamesListPage/>}/>
-                    <Route path="/about" element={<RulesPage/>}/>
-                    <Route path={"/game/:gameID"} element={<GamePage/>}/>
+                    <Route path="/" element={<GamesListPage setCurrentGameTabVisible={(state)=>setCurrentGameTabVisible(state)}/>}/>
+                    {/*<Route path="/about" element={<RulesPage/>}/>*/}
+                    <Route path={"/game/:gameID"} element={<GamePage setCurrentGameTabVisible={(state)=>setCurrentGameTabVisible(state)}/>}/>
                 </Routes>
             </div>
             </HashRouter>

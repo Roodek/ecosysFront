@@ -3,9 +3,11 @@ import "../stylesheets/GameTable.css";
 import PropTypes from "prop-types";
 import CardInHand from "./CardInHand";
 import CardOnBoard from "./CardOnBoard";
-import {Button, Col, Container, Row} from "react-bootstrap"; // For styling
+import {Button} from "react-bootstrap"; // For styling
 
 const GameTable = ({
+                       turn,
+                       playerNames,
                        opponents,
                        largeBoard,
                        hand,
@@ -110,27 +112,17 @@ const GameTable = ({
             {/* Top Section: Two Small Boards */}
             <div className="boards-container">
                 {opponents.map((opponent, index) => (
-                    // <Container key={index}>
-                    //     {opponent.board.map((row, rowIndex) => (
-                    //                     <Row key={rowIndex} >
-                    //                         {row.map((cell, cellIndex) => (
-                    //                             <Col key={cellIndex}>
-                    //                                 <div className={"cell"}>{cell}</div>
-                    //                             </Col>
-                    //                         ))}
-                    //                     </Row>
-                    //                 ))}
-                    // </Container>
                     <div className={"opponent-board"} key={index}>
                         <h3>{opponent.name}</h3>{opponent.selectedMove && <p>MOVE SUBMITTED</p>}
-                        <div  className="small-board">
+                        <div className="small-board">
                             {opponent.board.map((row, rowIndex) => (
                                 <div key={rowIndex} className="table-row">
                                     {row.map((cell, cellIndex) => (
                                         <div key={cellIndex} className="cell">
                                             <CardOnBoard key={'' + rowIndex + cellIndex}
                                                          card={cell}
-                                                         onClick={() => {}}
+                                                         onClick={() => {
+                                                         }}
                                                          state={"NONE"}/>
                                         </div>
                                     ))}
@@ -162,6 +154,7 @@ const GameTable = ({
                 <div className={"action-panel"}>
                     {swapButtonVisible && <button onClick={swapCards}>select cards to swap</button>}
                     {swapButtonVisible && <h3>you can select slots to swap</h3>}
+                    Direction of hand swap: {turn<11?'<= '+playerNames.map(name=>name.substring(name.length-2)).join(' <= ')+ ' <=':'=> '+playerNames.map(name=>name.substring(name.length-2)).join(' => ') + ' =>'}
                     <div className="hand-container">
                         {hand && hand.map((card, index) => (
                             <CardInHand key={index} card={card} onClick={() => {
@@ -179,13 +172,16 @@ const GameTable = ({
                     </Button>
                     <Button variant={"danger"} onClick={cancelMove}>Cancel move</Button>
                 </div>
-                {(moveSelected || largeBoard.flat().filter(elem=>elem!=null).length===20) && <div className={"game-disabled-overlay"}/>}
+                {(moveSelected || largeBoard.flat().filter(elem => elem != null).length === 20) &&
+                    <div className={"game-disabled-overlay"}/>}
             </div>
         </div>
     );
 };
 
 GameTable.propTypes = {
+    turn: PropTypes.number.isRequired,
+    playerNames: PropTypes.arrayOf(PropTypes.string).isRequired,
     opponents: PropTypes.array.isRequired, // A 3D array of strings
     largeBoard: PropTypes.arrayOf(
         PropTypes.arrayOf(PropTypes.string)

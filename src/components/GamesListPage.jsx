@@ -7,7 +7,7 @@ import {useNavigate} from 'react-router-dom';
 import '../stylesheets/GamesListPage.css'
 import {Button, Spinner} from "react-bootstrap";
 
-const GamesListPage = () => {
+const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
     const [games, setGames] = useState([]);
     const [messages, setMessages] = useState([]);
     const [topicID, setTopicID] = useState([]);
@@ -16,6 +16,7 @@ const GamesListPage = () => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false);
 
+    let gamesWebsocketSubscription = null
     useEffect(() => {
         client.current = new Client({
             brokerURL: process.env.REACT_APP_WS_URL,
@@ -28,7 +29,7 @@ const GamesListPage = () => {
         });
 
         client.current.onConnect = () => {
-            client.current.subscribe('/topic/games', (message) => {
+            gamesWebsocketSubscription = client.current.subscribe('/topic/games', (message) => {
                 const messageBody = JSON.parse(message.body);
                 fetchGames()
                 console.log("message got: "+ messageBody)
@@ -39,6 +40,10 @@ const GamesListPage = () => {
         client.current.activate();
         fetchGames()
         return () => {
+            if(gamesWebsocketSubscription){
+                gamesWebsocketSubscription.unsubscribe()
+                gamesWebsocketSubscription=null
+            }
             if (client.current && client.current.connected) {
                 client.current.deactivate();
             }
@@ -110,8 +115,14 @@ const GamesListPage = () => {
             });
     }
     const joinGame = (gameID,players=[]) => {
+        if(gamesWebsocketSubscription){
+            gamesWebsocketSubscription.unsubscribe()
+            gamesWebsocketSubscription=null
+        }
         if(localStorage.getItem('playerID') && players && players.map(player=>player._id).includes(localStorage.getItem('playerID'))) {
             goToGamePage(gameID)
+            localStorage.setItem('gameID', gameID)
+            setCurrentGameTabVisible(true)
         }else {
             fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/join', {
                 method: 'POST', // Specify the HTTP method
@@ -133,6 +144,8 @@ const GamesListPage = () => {
                     console.log('Success:', data); // Handle the parsed data
                     localStorage.setItem('playerID', data)
                     localStorage.setItem('playerName', playerName.toString())
+                    localStorage.setItem('gameID', gameID)
+                    setCurrentGameTabVisible(true)
                     goToGamePage(gameID)
                 })
                 .catch(error => {
@@ -151,7 +164,7 @@ const GamesListPage = () => {
     return (
         <div className={"game-list"}>
             <h1>Games</h1>
-            <h3>Enter you name:</h3><input type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
+            <h3>Enter you name:</h3><input disabled={!!localStorage.getItem("playerName")} type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
             {loading && <Spinner animation="border" variant="success" />}
             <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (

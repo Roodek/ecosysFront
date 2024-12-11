@@ -6,18 +6,9 @@ import GameTable from "./GameTable";
 import "../stylesheets/GamePage.css"
 import Ranking from "./Ranking";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import * as PropTypes from "prop-types";
-import ChatComponent from "./ChatComponent";
 
 
-ChatComponent.propTypes = {
-    chatMessages: PropTypes.arrayOf(PropTypes.any),
-    callbackfn: PropTypes.func,
-    onChange: PropTypes.func,
-    value: PropTypes.string,
-    onClick: PropTypes.func
-};
-const GamePage = () => {
+const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
     const navigate = useNavigate();
     const playerName = localStorage.getItem("playerName");
     const {gameID} = useParams()
@@ -81,6 +72,7 @@ const GamePage = () => {
     }
     const processGameResponse = (gameResponse) => {
         setGame(gameResponse)
+        gameResponse.players.map((player,index)=>player.name = player.name+' #'+(index+1))
         const player = gameResponse.players.find(player => player._id === localStorage.getItem('playerID'))
         setPlayerBoard(processBoard(player.board))
         setMoveSelected(player.selectedMove)
@@ -130,6 +122,9 @@ const GamePage = () => {
             })
             .then(() => {
                 localStorage.removeItem('playerID')
+                localStorage.removeItem('playerName')
+                localStorage.removeItem('gameID')
+                setCurrentGameTabVisible(false)
                 navigate('/')
             })
             .catch(error => console.log(error));
@@ -151,8 +146,8 @@ const GamePage = () => {
     const connectToGameSocket = () => {
         client.current.subscribe('/topic/games/' + gameID, (message) => {
             const messageBody = JSON.parse(message.body);
-            reactToMessage(JSON.stringify(messageBody))
-            fetchGameForPlayer()
+            reactToMessage(messageBody)
+
         });
 
         client.current.subscribe('/topic/games/' + gameID + '/chat', (message) => {
@@ -163,8 +158,10 @@ const GamePage = () => {
     }
 
     const reactToMessage = (messageBody) => {
-        //fetchGameForPlayer()
-        console.log('got message: ' + messageBody)//todo process message accordingly
+        console.log('got message: ' + JSON.stringify(messageBody))//todo process message accordingly
+        if(messageBody.content !=="left") {
+            fetchGameForPlayer()
+        }
     }
     const playCard = (move) => {
         fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/putCard',
@@ -245,14 +242,19 @@ const GamePage = () => {
                     <h2>host: {game.players && game.players[0] && game.players[0].name}</h2>
                     <h3>players: {game.players && game.players.map(player => player.name).join(", ")}</h3>
                     {game.players && game.players.length > 0 && game.players[0]._id === localStorage.getItem('playerID') &&
-                        <button disabled={game.players.length < 3} onClick={startGame}>start game</button>}
-                    <button onClick={leaveGame}>leave</button>
+                        <Button variant={"light"} disabled={game.players.length < 3} onClick={startGame}>start game</Button>}
+                    <Button variant={"warning"} onClick={leaveGame}>leave</Button>
                 </div>}
             </div>
             <div className={"game-table"}>
                 <div className={"game"}>{game && game.turn > 0 && hand &&
-                    <GameTable hand={hand} largeBoard={processDBBoard()} opponents={opponentBoards}
-                               onSubmitMove={submitMove} availableMoves={availableMoves} moveSelected={moveSelected}/>}
+                    <GameTable turn={game.turn}
+                               playerNames={game.players.map(player => player.name)}
+                               hand={hand} largeBoard={processDBBoard()}
+                               opponents={opponentBoards}
+                               onSubmitMove={submitMove}
+                               availableMoves={availableMoves}
+                               moveSelected={moveSelected}/>}
                 </div>
                 {game && game.turn > 20 && <Ranking players={game.players}/>}
             </div>
@@ -284,7 +286,6 @@ const styles = {
         border: '5px solid #ddd',
         borderRadius: '4px',
         marginBottom: '10px',
-        cursor: 'pointer',
         transition: 'background-color 0.3s',
         backgroundColor: '#34db5e',
     },
