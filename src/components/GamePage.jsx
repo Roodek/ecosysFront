@@ -6,9 +6,10 @@ import GameTable from "./GameTable";
 import "../stylesheets/GamePage.css"
 import Ranking from "./Ranking";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import {createNewGame, joinGame} from "../apiCalls/commonApiCalls";
 
 
-const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
+const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
     const navigate = useNavigate();
     const playerName = localStorage.getItem("playerName");
     const {gameID} = useParams()
@@ -17,20 +18,76 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
     const [playerBoard, setPlayerBoard] = useState({});
     const [opponentBoards, setOpponentBoards] = useState({});
     const [moveSelected, setMoveSelected] = useState({});
-    const client = useRef(null); // Define client as a ref
     const [availableMoves, setAvailableMoves] = useState([]);
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const [chatVisible, setChatVisible] = useState(false);
+    const [rematchGameID,setRematchGameID] = useState('');
+    const [currentGameID, setCurrentGameID] = useState(gameID);
+    const client = useRef(null); // Define client as a ref
 
+    let gameSocket = null
+    let gameChatSocket = null
+    // useEffect(() => {
+    //     console.log('constructor: '+gameID)
+    //     window.addEventListener("beforeunload", handleBeforeLeave)
+    //     window.addEventListener("popstate", handleBeforeLeave)
+    //     fetchGameForPlayer()
+    //     client.current = new Client({
+    //         brokerURL: process.env.REACT_APP_WS_URL,
+    //         connectHeaders: {},
+    //         // debug: (str) => console.log(str),
+    //         reconnectDelay: 5000,
+    //         heartbeatIncoming: 4000,
+    //         heartbeatOutgoing: 4000,
+    //         webSocketFactory: () => new SockJS(process.env.REACT_APP_SERVER_URL + '/ws'),
+    //     });
+    //
+    //     client.current.onConnect = () => {
+    //         connectToGameSocket()
+    //     };
+    //     client.current.activate();
+    //     console.log("list page opened")
+    //     return () => {
+    //         window.removeEventListener("popstate", handleBeforeLeave)
+    //         window.removeEventListener("beforeunload", handleBeforeLeave);
+    //         if(gameSocket){
+    //             gameSocket.unsubscribe()
+    //         }
+    //         if(gameChatSocket){
+    //             gameChatSocket.unsubscribe()
+    //         }
+    //         if (client.current && client.current.connected) {
+    //             client.current.deactivate();
+    //         }
+    //     }
+    // }, [gameID])
     useEffect(() => {
-        window.addEventListener("beforeunload", handleBeforeLeave)
-        window.addEventListener("popstate", handleBeforeLeave)
-        fetchGameForPlayer()
+        console.log('gameID: ' + gameID);
+        console.log('Current gameID: ' + currentGameID);
+        setCurrentGameID(gameID);
+        // Cleanup old listeners and resources
+        window.removeEventListener("popstate", handleBeforeLeave);
+        window.removeEventListener("beforeunload", handleBeforeLeave);
+        if (gameSocket) {
+            gameSocket.unsubscribe();
+        }
+        if (gameChatSocket) {
+            gameChatSocket.unsubscribe();
+        }
+        if (client.current && client.current.connected) {
+            client.current.deactivate();
+        }
+
+        // Add new listeners for the updated gameID
+        window.addEventListener("beforeunload", handleBeforeLeave);
+        window.addEventListener("popstate", handleBeforeLeave);
+        fetchGameForPlayer(); // Fetch the new game details based on the new gameID
+
+        // Reinitialize WebSocket client
         client.current = new Client({
             brokerURL: process.env.REACT_APP_WS_URL,
             connectHeaders: {},
-            // debug: (str) => console.log(str),
             reconnectDelay: 5000,
             heartbeatIncoming: 4000,
             heartbeatOutgoing: 4000,
@@ -38,36 +95,42 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
         });
 
         client.current.onConnect = () => {
-            // client.current.subscribe('/topic/games', (message) => {
-            //     const messageBody = JSON.parse(message.body);
-            //     fetchGame()
-            //     console.log("message got:"+messageBody)
-            //     //setMessages((prevMessages) => [...prevMessages, messageBody]);
-            // });
-            connectToGameSocket()
+            connectToGameSocket(); // Connect to the game socket with the updated gameID
         };
+
         client.current.activate();
-        console.log("list page opened")
+
         return () => {
-            window.removeEventListener("popstate", handleBeforeLeave)
+            // Cleanup on component unmount or before running the effect again
+            window.removeEventListener("popstate", handleBeforeLeave);
             window.removeEventListener("beforeunload", handleBeforeLeave);
+            if (gameSocket) {
+                gameSocket.unsubscribe();
+            }
+            if (gameChatSocket) {
+                gameChatSocket.unsubscribe();
+            }
             if (client.current && client.current.connected) {
                 client.current.deactivate();
             }
-        }
-    }, [])
+        };
+    }, [gameID]); // Add gameID to the dependency array
 
+    const resetGameStateToRematchGame = (newGameID) =>{
+        setCurrentGameID(newGameID)
+        setGame([])
+        setMoveSelected({})
+        setRematchGameID('')
+    }
     const fetchGameForPlayer = () => {
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID'))
+        fetch(process.env.REACT_APP_API_URL + '/games/' + currentGameID + '/players/' + localStorage.getItem('playerID'))
             .then(response => response.json())
             .then(game => {
                 processGameResponse(game)
                 if (game.turn > 0) {
                     fetchAvailableMovesForPlayer()
                 }
-            }).then(() => {
-
-        })
+            })
             .catch(error => console.log(error));
     }
     const processGameResponse = (gameResponse) => {
@@ -86,7 +149,7 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
             }))
     }
     const fetchAvailableMovesForPlayer = () => {
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/availableMoves')
+        fetch(process.env.REACT_APP_API_URL + '/games/' + currentGameID + '/players/' + localStorage.getItem('playerID') + '/availableMoves')
             .then(response => response.json())
             .then(possibleMoves => {
                 setHand(possibleMoves.cardsInHand.map(card => card.cardType))
@@ -111,7 +174,7 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
         const data = {
             playerID: localStorage.getItem('playerID')
         }
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/leave',
+        fetch(process.env.REACT_APP_API_URL + '/games/' + currentGameID + '/leave',
             {
                 method: 'POST', // Specify the HTTP method
                 headers: {
@@ -130,9 +193,64 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
             .catch(error => console.log(error));
     }
 
+    const leaveFinishedGame = () =>{
+        localStorage.removeItem('gameID')
+        setCurrentGameTabVisible(false)
+        navigate('/')
+    }
+
+    const isPlayerHost = () => {
+        return localStorage.getItem('playerID') != null && localStorage.getItem('playerID') === game.players[0]._id;
+    }
+
+    const rematch =()=>{
+        if(isPlayerHost()){
+            createNewGame().then(newGameID => {
+                joinGame(newGameID,playerName).then(newPlayerID => {
+                    const payload = {from: 'REMATCH', content: newGameID};
+                    if (client.current) {
+                        client.current.publish({
+                            destination: '/app/games/' + currentGameID,
+                            body: JSON.stringify(payload),
+                        });
+                    }
+                    localStorage.setItem('playerID', newPlayerID)
+                    localStorage.setItem('playerName', playerName.toString())
+                    localStorage.setItem('gameID', newGameID)
+                    setCurrentGameTabVisible(true)
+                    goToGamePage(newGameID)
+                })
+                    .catch(error => {
+                        console.error('Error:', error); // Handle any errors
+                    });
+            })
+                .catch(error => {
+                    console.error('Error:', error); // Handle any errors
+                });
+        }else{
+            joinGame(rematchGameID,playerName).then(data => {
+                localStorage.setItem('playerID', data)
+                localStorage.setItem('playerName', playerName.toString())
+                localStorage.setItem('gameID', rematchGameID)
+                setCurrentGameTabVisible(true)
+                goToGamePage(rematchGameID)
+            })
+                .catch(error => {
+                    console.error('Error:', error); // Handle any errors
+                });
+        }
+    }
+    const goToGamePage = (newGameID) => {
+        console.log('go to new gamePage:'+ newGameID);
+        resetGameStateToRematchGame(newGameID)
+        navigate(`/game/${newGameID}`, {
+            state: {
+                playerName: playerName
+            }
+        });
+    };
     const startGame = () => {
-        console.log(game)
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/start',
+        fetch(process.env.REACT_APP_API_URL + '/games/' + currentGameID + '/start',
             {
                 method: 'POST', // Specify the HTTP method
                 headers: {
@@ -144,13 +262,13 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
     }
 
     const connectToGameSocket = () => {
-        client.current.subscribe('/topic/games/' + gameID, (message) => {
+        gameSocket = client.current.subscribe('/topic/games/' + currentGameID, (message) => {
             const messageBody = JSON.parse(message.body);
             reactToMessage(messageBody)
 
         });
 
-        client.current.subscribe('/topic/games/' + gameID + '/chat', (message) => {
+        gameChatSocket = client.current.subscribe('/topic/games/' + currentGameID + '/chat', (message) => {
             const messageBody = JSON.parse(message.body);
             setChatMessages((prevMessages)=>[...prevMessages, messageBody])
         });
@@ -159,12 +277,17 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
 
     const reactToMessage = (messageBody) => {
         console.log('got message: ' + JSON.stringify(messageBody))//todo process message accordingly
-        if(messageBody.content !=="left") {
+        if(messageBody.from==='REMATCH'){
+            setRematchGameID(messageBody.content)
+            return
+        }
+        if(messageBody.content !=="left" ) {
             fetchGameForPlayer()
         }
+
     }
     const playCard = (move) => {
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/putCard',
+        fetch(process.env.REACT_APP_API_URL + '/games/' + currentGameID + '/players/' + localStorage.getItem('playerID') + '/putCard',
             {
                 method: 'POST', // Specify the HTTP method
                 headers: {
@@ -181,7 +304,7 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
             .catch(error => console.log(error));
     }
     const rabbitSwap = (move) => {
-        fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/players/' + localStorage.getItem('playerID') + '/swapMove',
+        fetch(process.env.REACT_APP_API_URL + '/games/' + currentGameID + '/players/' + localStorage.getItem('playerID') + '/swapMove',
             {
                 method: 'POST', // Specify the HTTP method
                 headers: {
@@ -225,7 +348,7 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
         const payload = {from: playerName, content: message};
         if (client.current) {
             client.current.publish({
-                destination: '/app/games/' + gameID + '/chat',
+                destination: '/app/games/' + currentGameID + '/chat',
                 body: JSON.stringify(payload),
             });
         }
@@ -242,13 +365,14 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
                     <h2>host: {game.players && game.players[0] && game.players[0].name}</h2>
                     <h3>players: {game.players && game.players.map(player => player.name).join(", ")}</h3>
                     {game.players && game.players.length > 0 && game.players[0]._id === localStorage.getItem('playerID') &&
-                        <Button variant={"light"} disabled={game.players.length < 3} onClick={startGame}>start game</Button>}
+                        <Button variant={"success"} disabled={game.players.length < 3} onClick={startGame}>start game</Button>}
                     <Button variant={"warning"} onClick={leaveGame}>leave</Button>
                 </div>}
             </div>
             <div className={"game-table"}>
                 <div className={"game"}>{game && game.turn > 0 && hand &&
                     <GameTable turn={game.turn}
+                               playerName={game.players.find(player => player._id === localStorage.getItem('playerID')).name}
                                playerNames={game.players.map(player => player.name)}
                                hand={hand} largeBoard={processDBBoard()}
                                opponents={opponentBoards}
@@ -257,6 +381,11 @@ const GamePage = ({setCurrentGameTabVisible=()=>{}}) => {
                                moveSelected={moveSelected}/>}
                 </div>
                 {game && game.turn > 20 && <Ranking players={game.players}/>}
+                {game && game.turn > 20 &&
+                    <div>
+                        {(rematchGameID.length>0 || isPlayerHost()) && <Button onClick={rematch}>Rematch</Button>}
+                        <Button onClick={leaveFinishedGame}>End</Button>
+                    </div>}
             </div>
             <div className={"chat-container"}>
                 <Button onClick={showHideChat} variant={"warning"} id={"hide-button"}>{chatVisible?"Hide chat":"Show chat"}</Button>

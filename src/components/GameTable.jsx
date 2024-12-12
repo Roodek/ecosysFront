@@ -7,6 +7,7 @@ import {Button} from "react-bootstrap"; // For styling
 
 const GameTable = ({
                        turn,
+    playerName,
                        playerNames,
                        opponents,
                        largeBoard,
@@ -152,9 +153,14 @@ const GameTable = ({
             </div>
             <div className="game-panel">
                 <div className={"action-panel"}>
-                    {swapButtonVisible && <button onClick={swapCards}>select cards to swap</button>}
+                    {swapButtonVisible && <Button variant={"outline-info"} onClick={swapCards}>select cards to swap</Button>}
                     {swapButtonVisible && <h3>you can select slots to swap</h3>}
-                    Direction of hand swap: {turn<11?'<= '+playerNames.map(name=>name.substring(name.length-2)).join(' <= ')+ ' <=':'=> '+playerNames.map(name=>name.substring(name.length-2)).join(' => ') + ' =>'}
+                    <div className={"player-info"}>
+                        Direction of hand swap: {turn<11?'<= '+playerNames.map(name=>name.substring(name.length-2)).join(' <= ')+ ' <=':'=> '+playerNames.map(name=>name.substring(name.length-2)).join(' => ') + ' =>'}
+                        <br/>
+                        Your player number: {playerName}
+                    </div>
+                    <div className={"control-panel"}>
                     <div className="hand-container">
                         {hand && hand.map((card, index) => (
                             <CardInHand key={index} card={card} onClick={() => {
@@ -171,6 +177,7 @@ const GameTable = ({
                         move
                     </Button>
                     <Button variant={"danger"} onClick={cancelMove}>Cancel move</Button>
+                    </div>
                 </div>
                 {(moveSelected || largeBoard.flat().filter(elem => elem != null).length === 20) &&
                     <div className={"game-disabled-overlay"}/>}
@@ -181,6 +188,7 @@ const GameTable = ({
 
 GameTable.propTypes = {
     turn: PropTypes.number.isRequired,
+    playerName: PropTypes.string.isRequired,
     playerNames: PropTypes.arrayOf(PropTypes.string).isRequired,
     opponents: PropTypes.array.isRequired, // A 3D array of strings
     largeBoard: PropTypes.arrayOf(

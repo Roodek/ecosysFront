@@ -37,7 +37,7 @@ const MainPage = ({selectTheme}) => {
                 <Routes>
                     <Route path="/" element={<GamesListPage setCurrentGameTabVisible={(state)=>setCurrentGameTabVisible(state)}/>}/>
                     {/*<Route path="/about" element={<RulesPage/>}/>*/}
-                    <Route path={"/game/:gameID"} element={<GamePage setCurrentGameTabVisible={(state)=>setCurrentGameTabVisible(state)}/>}/>
+                    <Route path={"/game/:gameID"} element={<GamePage key={window.location.hash} setCurrentGameTabVisible={(state)=>setCurrentGameTabVisible(state)}/>}/>
                 </Routes>
             </div>
             </HashRouter>
