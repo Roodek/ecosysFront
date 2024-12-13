@@ -9,7 +9,10 @@ import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {createNewGame, joinGame} from "../apiCalls/commonApiCalls";
 
 
-const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
+const GamePage = ({
+                      setCurrentGameTabVisible = (state) => {
+                      }
+                  }) => {
     const navigate = useNavigate();
     const playerName = localStorage.getItem("playerName");
     const {gameID} = useParams()
@@ -22,46 +25,13 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const [chatVisible, setChatVisible] = useState(false);
-    const [rematchGameID,setRematchGameID] = useState('');
+    const [rematchGameID, setRematchGameID] = useState('');
     const [currentGameID, setCurrentGameID] = useState(gameID);
+    const [newMessage,setNewMessage] = useState(false);
     const client = useRef(null); // Define client as a ref
 
     let gameSocket = null
     let gameChatSocket = null
-    // useEffect(() => {
-    //     console.log('constructor: '+gameID)
-    //     window.addEventListener("beforeunload", handleBeforeLeave)
-    //     window.addEventListener("popstate", handleBeforeLeave)
-    //     fetchGameForPlayer()
-    //     client.current = new Client({
-    //         brokerURL: process.env.REACT_APP_WS_URL,
-    //         connectHeaders: {},
-    //         // debug: (str) => console.log(str),
-    //         reconnectDelay: 5000,
-    //         heartbeatIncoming: 4000,
-    //         heartbeatOutgoing: 4000,
-    //         webSocketFactory: () => new SockJS(process.env.REACT_APP_SERVER_URL + '/ws'),
-    //     });
-    //
-    //     client.current.onConnect = () => {
-    //         connectToGameSocket()
-    //     };
-    //     client.current.activate();
-    //     console.log("list page opened")
-    //     return () => {
-    //         window.removeEventListener("popstate", handleBeforeLeave)
-    //         window.removeEventListener("beforeunload", handleBeforeLeave);
-    //         if(gameSocket){
-    //             gameSocket.unsubscribe()
-    //         }
-    //         if(gameChatSocket){
-    //             gameChatSocket.unsubscribe()
-    //         }
-    //         if (client.current && client.current.connected) {
-    //             client.current.deactivate();
-    //         }
-    //     }
-    // }, [gameID])
     useEffect(() => {
         console.log('gameID: ' + gameID);
         console.log('Current gameID: ' + currentGameID);
@@ -116,7 +86,7 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
         };
     }, [gameID]); // Add gameID to the dependency array
 
-    const resetGameStateToRematchGame = (newGameID) =>{
+    const resetGameStateToRematchGame = (newGameID) => {
         setCurrentGameID(newGameID)
         setGame([])
         setMoveSelected({})
@@ -135,7 +105,7 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
     }
     const processGameResponse = (gameResponse) => {
         setGame(gameResponse)
-        gameResponse.players.map((player,index)=>player.name = player.name+' #'+(index+1))
+        gameResponse.players.map((player, index) => player.name = player.name + ' #' + (index + 1))
         const player = gameResponse.players.find(player => player._id === localStorage.getItem('playerID'))
         setPlayerBoard(processBoard(player.board))
         setMoveSelected(player.selectedMove)
@@ -193,7 +163,7 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
             .catch(error => console.log(error));
     }
 
-    const leaveFinishedGame = () =>{
+    const leaveFinishedGame = () => {
         localStorage.removeItem('gameID')
         setCurrentGameTabVisible(false)
         navigate('/')
@@ -203,10 +173,10 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
         return localStorage.getItem('playerID') != null && localStorage.getItem('playerID') === game.players[0]._id;
     }
 
-    const rematch =()=>{
-        if(isPlayerHost()){
+    const rematch = () => {
+        if (isPlayerHost()) {
             createNewGame().then(newGameID => {
-                joinGame(newGameID,playerName).then(newPlayerID => {
+                joinGame(newGameID, playerName).then(newPlayerID => {
                     const payload = {from: 'REMATCH', content: newGameID};
                     if (client.current) {
                         client.current.publish({
@@ -227,8 +197,8 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
                 .catch(error => {
                     console.error('Error:', error); // Handle any errors
                 });
-        }else{
-            joinGame(rematchGameID,playerName).then(data => {
+        } else {
+            joinGame(rematchGameID, playerName).then(data => {
                 localStorage.setItem('playerID', data)
                 localStorage.setItem('playerName', playerName.toString())
                 localStorage.setItem('gameID', rematchGameID)
@@ -241,7 +211,7 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
         }
     }
     const goToGamePage = (newGameID) => {
-        console.log('go to new gamePage:'+ newGameID);
+        console.log('go to new gamePage:' + newGameID);
         resetGameStateToRematchGame(newGameID)
         navigate(`/game/${newGameID}`, {
             state: {
@@ -270,18 +240,19 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
 
         gameChatSocket = client.current.subscribe('/topic/games/' + currentGameID + '/chat', (message) => {
             const messageBody = JSON.parse(message.body);
-            setChatMessages((prevMessages)=>[...prevMessages, messageBody])
+            setNewMessage(!chatVisible)
+            setChatMessages((prevMessages) => [...prevMessages, messageBody])
         });
 
     }
 
     const reactToMessage = (messageBody) => {
         console.log('got message: ' + JSON.stringify(messageBody))//todo process message accordingly
-        if(messageBody.from==='REMATCH'){
+        if (messageBody.from === 'REMATCH') {
             setRematchGameID(messageBody.content)
             return
         }
-        if(messageBody.content !=="left" ) {
+        if (messageBody.content !== "left") {
             fetchGameForPlayer()
         }
 
@@ -354,7 +325,9 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
         }
         setMessage('')
     }
-    const showHideChat =()=>{
+    const showHideChat = () => {
+
+        setNewMessage(false)
         setChatVisible(!chatVisible)
     }
     return (
@@ -365,7 +338,8 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
                     <h2>host: {game.players && game.players[0] && game.players[0].name}</h2>
                     <h3>players: {game.players && game.players.map(player => player.name).join(", ")}</h3>
                     {game.players && game.players.length > 0 && game.players[0]._id === localStorage.getItem('playerID') &&
-                        <Button variant={"success"} disabled={game.players.length < 3} onClick={startGame}>start game</Button>}
+                        <Button variant={"success"} disabled={game.players.length < 3} onClick={startGame}>start
+                            game</Button>}
                     <Button variant={"warning"} onClick={leaveGame}>leave</Button>
                 </div>}
             </div>
@@ -383,25 +357,28 @@ const GamePage = ({setCurrentGameTabVisible=(state)=>{}}) => {
                 {game && game.turn > 20 && <Ranking players={game.players}/>}
                 {game && game.turn > 20 &&
                     <div>
-                        {(rematchGameID.length>0 || isPlayerHost()) && <Button onClick={rematch}>Rematch</Button>}
+                        {(rematchGameID.length > 0 || isPlayerHost()) && <Button onClick={rematch}>Rematch</Button>}
                         <Button onClick={leaveFinishedGame}>End</Button>
                     </div>}
             </div>
-            <div className={"chat-container"}>
-                <Button onClick={showHideChat} variant={"warning"} id={"hide-button"}>{chatVisible?"Hide chat":"Show chat"}</Button>
-                {chatVisible && <Container>
-                    {chatMessages.map((chatMessage, messageIndex) => (
-                        <Row key={messageIndex}>
-                            <Col xs={2}>{chatMessage.from}: </Col>
-                            <Col xs={10}> {chatMessage.content}</Col>
-                        </Row>))}
-                </Container>}
-                {chatVisible && <div className={"chat-controls"}>
-                    <Form.Control as="textarea"
-                                  placeholder={"write message here..."}
-                                  onChange={handleTextChange}
-                                  value={message}/>
-                    <Button disabled={message.length === 0} onClick={sendMessage}>Send</Button>
+            <div className={"chat-window"}>
+                <Button onClick={showHideChat} variant={!chatVisible && newMessage?"danger":"warning"}
+                        id={"hide-button"}>{chatVisible ? "Hide chat" : "Show chat"}</Button>
+                {chatVisible && <div className={"chat-container"}>
+                    <Container>
+                        {chatMessages.map((chatMessage, messageIndex) => (
+                            <Row key={messageIndex}>
+                                <Col className={"col-name"}>{chatMessage.from}: </Col>
+                                <Col className={"col-message"}> {chatMessage.content}</Col>
+                            </Row>))}
+                    </Container>
+                     <div className={"chat-controls"}>
+                        <Form.Control as="textarea"
+                                      placeholder={"write message here..."}
+                                      onChange={handleTextChange}
+                                      value={message}/>
+                        <Button disabled={message.length === 0} onClick={sendMessage}>Send</Button>
+                    </div>
                 </div>}
             </div>
             {/*<ChatComponent chatMessages={chatMessages} onChange={handleTextChange} value={message} onClick={sendMessage}/>*/}

@@ -164,7 +164,7 @@ const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
     return (
         <div className={"game-list"}>
             <h1>Games</h1>
-            <h3>Enter you name:</h3><input disabled={!!localStorage.getItem("playerName")} type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
+            <h3>Enter you name:</h3><input disabled={!!localStorage.getItem("playerName")} value={localStorage.getItem("playerName")} type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
             {loading && <Spinner animation="border" variant="success" />}
             <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (
@@ -181,11 +181,11 @@ const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
             {/*<button onClick={sendMessage}>Send Message</button>*/}
             {/*<input type={"text"} onChange={(e) => setTopicID(e.target.value)}/>*/}
             {/*<button onClick={sendTargetedMessage}>Send target</button>*/}
-            <ul>
-                {messages.map((msg, index) => (
-                    <li key={index}>{msg.from}: {msg.content}</li>
-                ))}
-            </ul>
+            {/*<ul>*/}
+            {/*    {messages.map((msg, index) => (*/}
+            {/*        <li key={index}>{msg.from}: {msg.content}</li>*/}
+            {/*    ))}*/}
+            {/*</ul>*/}
 
         </div>
     );

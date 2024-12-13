@@ -1,18 +1,15 @@
-.chat-container{
-    border: #527849 3px solid;
-    border-radius: 5px;
-    max-width: 500px;
-    min-width: 72px;
-    background-color: rgba(177, 255, 152, 0.55);
-    max-height: 200px;
-    min-height: 44px;
-    block-size: auto;
+.chat-window {
     position: fixed;
     bottom: 10px;
     right: 10px;
     z-index: 1000;
-    display: grid;
     justify-items: end;
+}
+.chat-container{
+    border: #527849 3px solid;
+    border-radius: 5px;
+    background-color: rgba(177, 255, 152, 0.55);
+    block-size: auto;
 }
 
 .chat-container .container{
@@ -27,13 +24,26 @@
     border-top-left-radius: 0px;
 }
 
-.chat-container .col-10{
+.chat-container .col-name{
+    width: 75px;
     word-break: break-word;
     overflow-wrap: break-word;
     overflow: hidden;        /* Hides content that overflows */
-    text-overflow: ellipsis; /* Adds ellipsis (...) if overflow is hidden */
+    /*text-overflow: ellipsis; !* Adds ellipsis (...) if overflow is hidden *!*/
     white-space: normal;
     text-align: left;
+}
+.chat-container .col{
+/*    overwrite default bootstrap*/
+}
+.chat-container .col-message{
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;        /* Hides content that overflows */
+    /*text-overflow: ellipsis; !* Adds ellipsis (...) if overflow is hidden *!*/
+    white-space: normal;
+    text-align: left;
+    width: 300px;
 }
 
 .chat-controls {
