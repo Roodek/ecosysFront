@@ -9,6 +9,9 @@ body, html, .container {
 .container {
     width: 100%;
 }
+.rules-cards{
+    width: 80px;
+}
 
 .content {
     display: flex;

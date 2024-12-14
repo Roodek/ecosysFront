@@ -33,8 +33,9 @@
     white-space: normal;
     text-align: left;
 }
-.chat-container .col{
+.container .col{
 /*    overwrite default bootstrap*/
+    flex: none;
 }
 .chat-container .col-message{
     word-break: break-word;
