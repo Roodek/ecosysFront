@@ -5,11 +5,16 @@ import SockJS from 'sockjs-client';
 import GameListEntry from "./GameListEntry";
 import {useNavigate} from 'react-router-dom';
 import '../stylesheets/GamesListPage.css'
-import {Button, Spinner} from "react-bootstrap";
+import {Badge, Button, Spinner} from "react-bootstrap";
 
-const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
+const GamesListPage = ({
+                           setCurrentGameTabVisible = () => {
+                           }
+                       }) => {
     const [games, setGames] = useState([]);
-    const [playerName, setPlayerName] = useState([]);
+    const [playerName, setPlayerName] = useState(() => {
+        return localStorage.getItem('playerName') || '';
+    });
     const client = useRef(null); // Define client as a ref
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false);
@@ -27,20 +32,16 @@ const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
         });
 
         client.current.onConnect = () => {
-            gamesWebsocketSubscription = client.current.subscribe('/topic/games', (message) => {
-                const messageBody = JSON.parse(message.body);
+            gamesWebsocketSubscription = client.current.subscribe('/topic/games', () => {
                 fetchGames()
-                console.log("message got: "+ messageBody)
-                setMessages((prevMessages) => [...prevMessages, messageBody]);
             });
         };
-        console.log("list page opened")
         client.current.activate();
         fetchGames()
         return () => {
-            if(gamesWebsocketSubscription){
+            if (gamesWebsocketSubscription) {
                 gamesWebsocketSubscription.unsubscribe()
-                gamesWebsocketSubscription=null
+                gamesWebsocketSubscription = null
             }
             if (client.current && client.current.connected) {
                 client.current.deactivate();
@@ -49,7 +50,6 @@ const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
     }, []);
 
     const fetchGames = () => {
-        console.log("fetchgames")
         setLoading(true);
         fetch(process.env.REACT_APP_API_URL + '/games')
             .then(response => response.json())
@@ -86,16 +86,16 @@ const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
                 console.error('Error:', error); // Handle any errors
             });
     }
-    const joinGame = (gameID,players=[]) => {
-        if(gamesWebsocketSubscription){
+    const joinGame = (gameID, players = []) => {
+        if (gamesWebsocketSubscription) {
             gamesWebsocketSubscription.unsubscribe()
-            gamesWebsocketSubscription=null
+            gamesWebsocketSubscription = null
         }
-        if(localStorage.getItem('playerID') && players && players.map(player=>player._id).includes(localStorage.getItem('playerID'))) {
+        if (localStorage.getItem('playerID') && players && players.map(player => player._id).includes(localStorage.getItem('playerID'))) {
             goToGamePage(gameID)
             localStorage.setItem('gameID', gameID)
             setCurrentGameTabVisible(true)
-        }else {
+        } else {
             fetch(process.env.REACT_APP_API_URL + '/games/' + gameID + '/join', {
                 method: 'POST', // Specify the HTTP method
                 headers: {
@@ -136,28 +136,26 @@ const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
     return (
         <div className={"game-list"}>
             <h1>Games</h1>
-            <h3>Enter you name:</h3><input value={localStorage.getItem("playerName")} type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
-            {loading && <Spinner animation="border" variant="success" />}
+            <h3>Enter you name:</h3><input value={playerName} type={"text"}
+                                           onChange={(e) => setPlayerName(e.target.value)}/>
+            {loading && <Spinner animation="border" variant="success"/>}
             <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (
-                    game.turn===0 && <div key={index}
-                        style={playerName.length > 0 && game.players.length < 6 ? styles.list : styles.listDisabled}>
+                    game.turn === 0 && <div key={index}
+                                            style={playerName.length > 0 && game.players.length < 6 ? styles.list : styles.listDisabled}>
                         <GameListEntry numberOfPayers={String(game.players.length)}
                                        gameID={game.id}
                                        playerNames={game.players.map(player => player.name).join(", ")}
-                                       onClick={() => joinGame(game.id,game.players,)}/></div>
+                                       onClick={() => joinGame(game.id, game.players,)}/></div>
                 ))}
             </div>
-            <Button variant="success" disabled={playerName.length === 0} onClick={createNewGame}>create new game</Button>
-            {/*<button onClick={connectToTargetTopic}>connect to target topic</button>*/}
-            {/*<button onClick={sendMessage}>Send Message</button>*/}
-            {/*<input type={"text"} onChange={(e) => setTopicID(e.target.value)}/>*/}
-            {/*<button onClick={sendTargetedMessage}>Send target</button>*/}
-            {/*<ul>*/}
-            {/*    {messages.map((msg, index) => (*/}
-            {/*        <li key={index}>{msg.from}: {msg.content}</li>*/}
-            {/*    ))}*/}
-            {/*</ul>*/}
+            {
+                localStorage.getItem('gameID') ? <Badge bg="secondary">Game already started</Badge>
+                    : <Button variant="success" disabled={playerName.length === 0} onClick={createNewGame}>
+                        create new game
+                    </Button>
+            }
+
 
         </div>
     );
