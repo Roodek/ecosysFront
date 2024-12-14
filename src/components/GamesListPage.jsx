@@ -9,8 +9,6 @@ import {Button, Spinner} from "react-bootstrap";
 
 const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
     const [games, setGames] = useState([]);
-    const [messages, setMessages] = useState([]);
-    const [topicID, setTopicID] = useState([]);
     const [playerName, setPlayerName] = useState([]);
     const client = useRef(null); // Define client as a ref
     const navigate = useNavigate()
@@ -50,32 +48,6 @@ const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
         };
     }, []);
 
-    const sendMessage = () => {
-        const message = {from: 'React Client', content: 'Hello from React!'};
-        if (client.current) {
-            client.current.publish({
-                destination: '/app/games',
-                body: JSON.stringify(message),
-            });
-        }
-        fetchGames()
-    };
-
-    const sendTargetedMessage = () => {
-        const message = {from: 'React Client', content: 'Hello from React!'};
-        if (client.current) {
-            client.current.publish({
-                destination: '/app/games/' + topicID,
-                body: JSON.stringify(message),
-            });
-        }
-    }
-    const connectToTargetTopic = () => {
-        client.current.subscribe('/topic/games/' + topicID, (message) => {
-            const messageBody = JSON.parse(message.body);
-            setMessages((prevMessages) => [...prevMessages, messageBody]);
-        });
-    }
     const fetchGames = () => {
         console.log("fetchgames")
         setLoading(true);
@@ -164,7 +136,7 @@ const GamesListPage = ({setCurrentGameTabVisible=()=>{}}) => {
     return (
         <div className={"game-list"}>
             <h1>Games</h1>
-            <h3>Enter you name:</h3><input disabled={!!localStorage.getItem("playerName")} value={localStorage.getItem("playerName")} type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
+            <h3>Enter you name:</h3><input value={localStorage.getItem("playerName")} type={"text"} onChange={(e) => setPlayerName(e.target.value)}/>
             {loading && <Spinner animation="border" variant="success" />}
             <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (
