@@ -38,6 +38,7 @@ const MainPage = ({selectTheme}) => {
                                 <Nav.Link as={Button} onClick={toggleRulesCanvas} >Rules</Nav.Link>
                                 <NavDropdown title="Theme" id="basic-nav-dropdown">
                                     <NavDropdown.Item onClick={()=>{selectTheme("PIXEL")}}>Pixel</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={()=>{selectTheme("DARK_FANTASY")}}>Dark fantasy</NavDropdown.Item>
                                     <NavDropdown.Item onClick={()=>{selectTheme("REGULAR")}}>Regular</NavDropdown.Item>
                                 </NavDropdown>
                                 {currentGameTabVisible && <Nav.Link as={NavLink} to={'/game/' + localStorage.getItem("gameID")}>CurrentGame</Nav.Link>}

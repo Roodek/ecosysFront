@@ -22,6 +22,8 @@ function App() {
         switch(activeTheme){
             case "PIXEL":
                 return "pixel-style"
+            case "DARK_FANTASY":
+                return "dark-fantasy-style"
             default:
                 return "regular-style"
         }

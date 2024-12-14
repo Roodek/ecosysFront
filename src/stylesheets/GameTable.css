@@ -93,7 +93,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.23);
     border: 4px solid #ccc;
     border-radius: 4px;
     overflow: hidden; /* Ensure the overlay fits perfectly */
