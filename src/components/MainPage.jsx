@@ -28,7 +28,7 @@ const MainPage = ({selectTheme}) => {
     return (
         <div className="page-container">
             <HashRouter>
-                <Navbar expand="lg" className="bg-body-tertiary">
+                <Navbar expand="lg" className="nav-custom">
                     <Container>
                         <Navbar.Brand as={NavLink} to="/">Synergies</Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />

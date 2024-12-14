@@ -5,6 +5,9 @@ body, html, .container {
     font-family: Arial, sans-serif;
     height: 100%;
 }
+.nav-custom{
+    background-color: rgba(248, 249, 250, 0.24) ;
+}
 
 .accordion-header{
     background-color: rgba(255,255,255,0.0);
