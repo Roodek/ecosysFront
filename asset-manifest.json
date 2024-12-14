@@ -1,12 +1,11 @@
 {
   "files": {
     "main.css": "/ecosysFront/static/css/main.75b51860.css",
-    "main.js": "/ecosysFront/static/js/main.e758a566.js",
+    "main.js": "/ecosysFront/static/js/main.f8b72132.js",
     "static/js/488.3edfe2dd.chunk.js": "/ecosysFront/static/js/488.3edfe2dd.chunk.js",
     "static/media/BACKGROUND.webp": "/ecosysFront/static/media/BACKGROUND.747d9bec78b37fcd6913.webp",
     "static/media/BEE.webp": "/ecosysFront/static/media/BEE.3ead608e99bc33ff8a09.webp",
     "static/media/FISH.webp": "/ecosysFront/static/media/FISH.7ec5cf22fcdc0537d1de.webp",
-    "static/media/DRAGONFLY.webp": "/ecosysFront/static/media/DRAGONFLY.b4498379ca85288a01f7.webp",
     "static/media/RABBIT.webp": "/ecosysFront/static/media/RABBIT.db8ad88e5c5e086f808e.webp",
     "static/media/MEADOW.webp": "/ecosysFront/static/media/MEADOW.803639f90a0d82c52783.webp",
     "static/media/RIVER.webp": "/ecosysFront/static/media/RIVER.d49763d4010a86526426.webp",
@@ -15,13 +14,14 @@
     "static/media/BEAR.webp": "/ecosysFront/static/media/BEAR.5b2b7fd28d008560a324.webp",
     "static/media/ELK.webp": "/ecosysFront/static/media/ELK.a1f8dbe0e034357b6ff6.webp",
     "static/media/EAGLE.webp": "/ecosysFront/static/media/EAGLE.b429717239981968e2ca.webp",
+    "static/media/DRAGONFLY.webp": "/ecosysFront/static/media/DRAGONFLY.bdde163260661240fa3c.webp",
     "index.html": "/ecosysFront/index.html",
     "main.75b51860.css.map": "/ecosysFront/static/css/main.75b51860.css.map",
-    "main.e758a566.js.map": "/ecosysFront/static/js/main.e758a566.js.map",
+    "main.f8b72132.js.map": "/ecosysFront/static/js/main.f8b72132.js.map",
     "488.3edfe2dd.chunk.js.map": "/ecosysFront/static/js/488.3edfe2dd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.75b51860.css",
-    "static/js/main.e758a566.js"
+    "static/js/main.f8b72132.js"
   ]
 }
