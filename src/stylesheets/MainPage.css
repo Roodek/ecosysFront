@@ -6,6 +6,18 @@ body, html, .container {
     height: 100%;
 }
 
+.accordion-header{
+    background-color: rgba(255,255,255,0.0);
+}
+.accordion-item{
+    background-color: rgba(255,255,255,0.25);
+}
+.accordion-collapse .collapse .show{
+    background-color: rgba(255,255,255,0.25);
+}
+.offcanvas.show:not(.hiding), .offcanvas.showing {
+    background: rgba(0, 0, 0, 0.5);
+}
 .container {
     width: 100%;
 }
