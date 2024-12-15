@@ -158,7 +158,7 @@ const GameTable = ({
                     <div className={"player-info"}>
                         Direction of hand swap: {turn<11?'<= '+playerNames.map(name=>name.substring(name.length-2)).join(' <= ')+ ' <=':'=> '+playerNames.map(name=>name.substring(name.length-2)).join(' => ') + ' =>'}
                         <br/>
-                        Your player number: {playerName}
+                        Your player tag: {playerName}
                     </div>
                     <div className={"control-panel"}>
                     <div className="hand-container">
