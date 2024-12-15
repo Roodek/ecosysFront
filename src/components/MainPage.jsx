@@ -3,7 +3,17 @@ import '../stylesheets/MainPage.css';
 import GamesListPage from "./GamesListPage";
 import {BrowserRouter as Router, Routes, Route, NavLink, HashRouter} from 'react-router-dom';
 import GamePage from "./GamePage";
-import {Container, Button, Nav, Navbar, NavDropdown, Offcanvas, Accordion, Image} from "react-bootstrap"; // Assuming a CSS file for styling
+import {
+    Container,
+    Button,
+    Nav,
+    Navbar,
+    NavDropdown,
+    Offcanvas,
+    Accordion,
+    Image,
+    OverlayTrigger, Tooltip
+} from "react-bootstrap"; // Assuming a CSS file for styling
 import Dropdown from 'react-bootstrap/Dropdown';
 import RulesPage from "./RulesPage";
 import PropTypes from "prop-types";
@@ -19,7 +29,15 @@ const MainPage = ({selectTheme}) => {
     const renderCard = (card) =>{
         return getTheme() === "REGULAR"?
             card:
-            <Image className={"rules-cards"} src={require("../../public/themes/"+getTheme()+"/"+card+".webp")} fluid/>
+            <OverlayTrigger
+                placement="left"
+                delay={{ show: 300, hide: 400 }}
+                overlay={<Tooltip  className={"big-card"} id="button-tooltip">
+                    <Image className={"rules-cards-big"} src={require("../../public/themes/"+getTheme()+"/"+card+".webp")} fluid/>
+                </Tooltip>}
+            >
+                <Image className={"rules-cards"} src={require("../../public/themes/"+getTheme()+"/"+card+".webp")} fluid/>
+            </OverlayTrigger>
     }
 
     const getTheme = ()=>{
@@ -54,22 +72,26 @@ const MainPage = ({selectTheme}) => {
                 </Routes>
             </div>
             </HashRouter>
-            <Offcanvas show={isCanvasVisible} placement={'end'} onHide={handleCloseCanvas} scroll={true} backdrop={true}>
+            <Offcanvas className={"rules-container"} show={isCanvasVisible} placement={'end'} onHide={handleCloseCanvas} scroll={true} backdrop={true}>
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Rules</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <Accordion>
-                        <Accordion.Item eventKey="0">
+                        <Accordion.Item className={"accordion-item-custom"}  eventKey="0">
                             <Accordion.Header>About</Accordion.Header>
                             <Accordion.Body>
                                 Welcome to my implementation of Ecosystem.
                                 The goal is to build a 4x5 or 5x4 board consisting of animal or land cards.
+                                You can hover over the cards images for a while to see them in bigger size.
+                                <br/>
+                                All of the images visible were generated using AI*
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="1">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="1">
                             <Accordion.Header>How to play</Accordion.Header>
                             <Accordion.Body>
+                                Each player is dealt 11 cards.
                                 During a turn each player selects a card from hand and clicks on one of the available slots.
                                 After each Player submitted their move the cards from hand get swapped between players.
                                 With the end of 10th turn each player is dealt another 10 cards (to get 11 in hand) and the direction of swap changes.
@@ -89,7 +111,7 @@ const MainPage = ({selectTheme}) => {
                                 How each card works can be checked by clicking each card below.
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="2">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="2">
                             <Accordion.Header>{renderCard('WOLF')}</Accordion.Header>
                             <Accordion.Body>
                                 The points are assigned for who has the most wolves present on the board
@@ -103,50 +125,50 @@ const MainPage = ({selectTheme}) => {
                                 the 3rd player will get only 4 points as 2 places are already taken.
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="3">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="3">
                             <Accordion.Header>{renderCard('FOX')}</Accordion.Header>
                             <Accordion.Body>
                                 Each fox grants 3 points if it is not adjacent to
                                 any <strong>wolf</strong> or <strong>bear</strong>
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="4">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="4">
                             <Accordion.Header>{renderCard('BEE')}</Accordion.Header>
                             <Accordion.Body>
                                 Bee gets 3 points per each adjacent <strong>meadow</strong> card
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="5">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="5">
                             <Accordion.Header>{renderCard('BEAR')}</Accordion.Header>
                             <Accordion.Body>
                                 Bear gets 2 points per each adjacent <strong>bee</strong> or <strong>fish</strong> card
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="6">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="6">
                             <Accordion.Header>{renderCard('EAGLE')}</Accordion.Header>
                             <Accordion.Body>
                                 Eagle gets 2 points per each <strong>rabbit</strong> or <strong>fish</strong> card that is within 2 cards range (diagonally 1)
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="7">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="7">
                             <Accordion.Header>{renderCard('FISH')}</Accordion.Header>
                             <Accordion.Body>
                                 Fish gets 2 points per each adjacent <strong>dragonfly</strong> or <strong>river</strong> card
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="8">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="8">
                             <Accordion.Header>{renderCard('DRAGONFLY')}</Accordion.Header>
                             <Accordion.Body>
                                 Dragonfly grants 1 point per each <strong>river</strong> card that builds the river adjacent to the dragonfly
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="9">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="9">
                             <Accordion.Header>{renderCard('ELK')}</Accordion.Header>
                             <Accordion.Body>
                                 Gives 2 points per each row and column that has at least 1 elk
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="10">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="10">
                             <Accordion.Header>{renderCard('RABBIT')}</Accordion.Header>
                             <Accordion.Body>
                                 Grants 1 point.
@@ -154,7 +176,7 @@ const MainPage = ({selectTheme}) => {
                                 The swap happens if after placing rabbit card a player clicks the <strong>select cards to swap button</strong> and then selects 2 cards to swap and submits move
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="11">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="11">
                             <Accordion.Header>{renderCard('MEADOW')}</Accordion.Header>
                             <Accordion.Body>
                                 Each meadow is created by placing <strong>meadow</strong> card adjacent to another <strong>meadow</strong> card.
@@ -169,7 +191,7 @@ const MainPage = ({selectTheme}) => {
                                     </ul>
                             </Accordion.Body>
                         </Accordion.Item>
-                        <Accordion.Item eventKey="12">
+                        <Accordion.Item className={"accordion-item-custom"} eventKey="12">
                             <Accordion.Header>{renderCard('RIVER')}</Accordion.Header>
                             <Accordion.Body>
                                 The points are given based on river length (river cards adjacent to each other) the player with longest rivers get:

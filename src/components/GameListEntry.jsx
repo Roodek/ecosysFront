@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import '../stylesheets/GameListEntry.css'
 
 const GameListEntry = ({ numberOfPayers='0',gameID='', playerNames='No description provided', onClick=() => {} }) => {
     return (
-        <div className="list-entry" onClick={onClick} style={styles.entry}>
-            <h3 style={styles.title}>Number of players: {numberOfPayers}</h3>
+        <div className="list-entry" onClick={onClick}>
+            <h3 className="title">Number of players: {numberOfPayers}</h3>
             <p>gameID: {gameID}</p>
-            <p style={styles.description}> players: {playerNames}</p>
+            <p className="description"> players: {playerNames}</p>
         </div>
     );
 };

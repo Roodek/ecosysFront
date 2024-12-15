@@ -1,0 +1,20 @@
+.list-entry {
+    padding: 10px;
+    border: 3px solid rgba(221, 221, 221, 0.72);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: rgba(52, 219, 94, 0.51);
+}
+
+.title {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+}
+
+.description {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}

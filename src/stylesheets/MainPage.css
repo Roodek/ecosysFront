@@ -12,20 +12,27 @@ body, html, .container {
 .accordion-header{
     background-color: rgba(255,255,255,0.0);
 }
-.accordion-item{
-    background-color: rgba(255,255,255,0.25);
-}
-.accordion-collapse .collapse .show{
-    background-color: rgba(255,255,255,0.25);
-}
-.offcanvas.show:not(.hiding), .offcanvas.showing {
-    background: rgba(0, 0, 0, 0.5);
+.rules-container{
+    background-color: rgba(255, 255, 255, 0.7) !important;
 }
 .container {
     width: 100%;
 }
+.accordion-button{
+    background-color: rgba(191, 191, 191, 0.25) !important;
+}
 .rules-cards{
     width: 80px;
+}
+
+.big-card{
+    width:400px;
+    opacity: 1 !important;
+}
+.big-card .tooltip-inner {
+    max-width: none; /* Removes Bootstrap's max-width restriction */
+    width: 400px; /* Set a fixed width */
+    height: auto; /* Optional: Adjust height as needed */
 }
 
 .content {
