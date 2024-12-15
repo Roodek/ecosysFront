@@ -65,6 +65,7 @@ const GamesListPage = ({
     }
 
     const createNewGame = () => {
+        setLoading(true)
         fetch(process.env.REACT_APP_API_URL + '/games/new', {
             method: 'POST', // Specify the HTTP method
             headers: {
@@ -76,6 +77,7 @@ const GamesListPage = ({
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
+                setLoading(false)
                 return response.json(); // Parse the response as JSON
             })
             .then(gameID => {
@@ -83,15 +85,18 @@ const GamesListPage = ({
                 joinGame(gameID)
             })
             .catch(error => {
+                setLoading(false)
                 console.error('Error:', error); // Handle any errors
             });
     }
     const joinGame = (gameID, players = []) => {
+        setLoading(true)
         if (gamesWebsocketSubscription) {
             gamesWebsocketSubscription.unsubscribe()
             gamesWebsocketSubscription = null
         }
         if (localStorage.getItem('playerID') && players && players.map(player => player._id).includes(localStorage.getItem('playerID'))) {
+            setLoading(false)
             goToGamePage(gameID)
             localStorage.setItem('gameID', gameID)
             setCurrentGameTabVisible(true)
@@ -110,6 +115,7 @@ const GamesListPage = ({
                     if (!response.ok) {
                         throw new Error('Network response was not ok ' + response.statusText);
                     }
+                    setLoading(false)
                     return response.json(); // Parse the response as JSON
                 })
                 .then(data => {
@@ -118,6 +124,7 @@ const GamesListPage = ({
                     localStorage.setItem('playerName', playerName.toString())
                     localStorage.setItem('gameID', gameID)
                     setCurrentGameTabVisible(true)
+                    setLoading(false)
                     goToGamePage(gameID)
                 })
                 .catch(error => {
@@ -138,7 +145,7 @@ const GamesListPage = ({
             <h1>Games</h1>
             <h3>Enter you name:</h3><input value={playerName} type={"text"}
                                            onChange={(e) => setPlayerName(e.target.value)}/>
-            {loading && <Spinner animation="border" variant="success"/>}
+            {loading && <div><Spinner animation="border" variant="success"/>Loading...</div>}
             <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (
                     game.turn === 0 && <div key={index}
