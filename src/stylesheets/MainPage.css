@@ -19,6 +19,9 @@ body, html, .container {
     width: 100%;
 }
 .accordion-button{
+    background-color: rgba(191, 191, 191, 0.1) !important;
+}
+.accordion-item{
     background-color: rgba(191, 191, 191, 0.25) !important;
 }
 .rules-cards{
