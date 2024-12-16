@@ -84,6 +84,7 @@ const MainPage = ({selectTheme}) => {
                                 Welcome to my implementation of Ecosystem.<br/>
                                 You can change the art themes by clicking <strong>Theme</strong> at the top.
                                 <br/>
+                                The game is played between 3-6 players.
                                 The goal is to build a 4x5 or 5x4 board consisting of animal or land cards.
                                 You can hover over the cards images for a while to see them in bigger size.
                                 <br/>

@@ -56,9 +56,10 @@ const CardInHand = ({card, onClick, selected}) => {
                     <div>{renderRule(card)}</div>
                 </Tooltip>
             }
+            container={document.body}
+            style={{position:"fixed"}}
         >
             <div onClick={onClick} className={selected ? "selected-card" : "card-in-hand"}>
-
                 {card && renderCard(card)}
             </div>
         </OverlayTrigger>

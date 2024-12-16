@@ -10,6 +10,13 @@
     background-color: #9ed974;
     border: 5px
 }
+
+.tooltip {
+    max-width: 300px; /* Prevents overly wide tooltips */
+    white-space: normal; /* Allows wrapping of long text */
+    overflow: hidden; /* Ensures no content spills outside */
+}
+
 .selected-card{
     width: 75px;
     height: 75px;

@@ -17,6 +17,7 @@ const GamesListPage = ({
     });
     const client = useRef(null); // Define client as a ref
     const navigate = useNavigate()
+    const [createNewGameEnabled, setCreateNewGameEnabled] = useState(true);
     const [loading, setLoading] = useState(false);
 
     let gamesWebsocketSubscription = null
@@ -66,6 +67,7 @@ const GamesListPage = ({
 
     const createNewGame = () => {
         setLoading(true)
+        setCreateNewGameEnabled(false)
         fetch(process.env.REACT_APP_API_URL + '/games/new', {
             method: 'POST', // Specify the HTTP method
             headers: {
@@ -75,6 +77,7 @@ const GamesListPage = ({
         })
             .then(response => {
                 if (!response.ok) {
+                    setCreateNewGameEnabled(true)
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
                 setLoading(false)
@@ -85,6 +88,7 @@ const GamesListPage = ({
                 joinGame(gameID)
             })
             .catch(error => {
+                setCreateNewGameEnabled(true)
                 setLoading(false)
                 console.error('Error:', error); // Handle any errors
             });
@@ -149,7 +153,7 @@ const GamesListPage = ({
             <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (
                     game.turn === 0 && <div key={index}
-                                            style={playerName.length > 0 && game.players.length < 6 ? styles.list : styles.listDisabled}>
+                                            style={playerName.length > 0 && game.players.length < 6 && localStorage.getItem('gameID') ? styles.list : styles.listDisabled}>
                         <GameListEntry numberOfPayers={String(game.players.length)}
                                        gameID={game.id}
                                        playerNames={game.players.map(player => player.name).join(", ")}

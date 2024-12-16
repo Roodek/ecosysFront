@@ -155,7 +155,6 @@ const GamePage = ({
             })
             .then(() => {
                 localStorage.removeItem('playerID')
-                localStorage.removeItem('playerName')
                 localStorage.removeItem('gameID')
                 setCurrentGameTabVisible(false)
                 navigate('/')
