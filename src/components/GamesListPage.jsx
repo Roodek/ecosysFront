@@ -146,7 +146,7 @@ const GamesListPage = ({
 
     return (
         <div className={"game-list"}>
-            <h1>Games</h1>
+            <h1>Available games list</h1>
             <h3>Enter you name:</h3><input value={playerName} type={"text"}
                                            onChange={(e) => setPlayerName(e.target.value)}/>
             {loading && <div><Spinner animation="border" variant="success"/>Loading...</div>}

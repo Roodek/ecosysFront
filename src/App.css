@@ -5,7 +5,7 @@
 .pixel-style{
   height: 100vh;
   text-align: center;
-  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url("../public/themes/PIXEL/BACKGROUND.webp") no-repeat center center fixed;
+  background: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.19)), url("../public/themes/PIXEL/BACKGROUND.webp") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
