@@ -24,6 +24,8 @@ function App() {
                 return "pixel-style"
             case "DARK_FANTASY":
                 return "dark-fantasy-style"
+            case "OIL":
+                return "oil-style"
             default:
                 return "regular-style"
         }

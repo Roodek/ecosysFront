@@ -33,7 +33,7 @@
     white-space: normal;
     text-align: left;
 }
-.container .col{
+.game-page .container .col{
 /*    overwrite default bootstrap*/
     flex: none;
 }

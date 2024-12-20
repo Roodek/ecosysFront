@@ -330,7 +330,7 @@ const GamePage = ({
         setChatVisible(!chatVisible)
     }
     return (
-        <div>
+        <div className={"game-page"}>
             <div className="GameWaitingRoom">
                 {game && game.turn === 0 && <div style={styles.gameWindow}>
                     <h1>Game: {gameID}</h1>
