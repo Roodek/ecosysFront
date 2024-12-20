@@ -11,7 +11,7 @@
     border: 5px
 }
 
-.tooltip {
+.card-in-hand-object .tooltip {
     max-width: 300px; /* Prevents overly wide tooltips */
     white-space: normal; /* Allows wrapping of long text */
     overflow: hidden; /* Ensures no content spills outside */

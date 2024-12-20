@@ -49,6 +49,7 @@ const CardInHand = ({card, onClick, selected}) => {
     }
 
     return (
+        <div className={"card-in-hand-object"}>
         <OverlayTrigger
             placement={"bottom"}
             overlay={
@@ -63,6 +64,7 @@ const CardInHand = ({card, onClick, selected}) => {
                 {card && renderCard(card)}
             </div>
         </OverlayTrigger>
+        </div>
     )
 };
 CardInHand.propTypes = {
