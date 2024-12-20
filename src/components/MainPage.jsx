@@ -81,7 +81,7 @@ const MainPage = ({selectTheme}) => {
                                     }}>Dark fantasy</NavDropdown.Item>
                                     <NavDropdown.Item onClick={() => {
                                         selectTheme("OIL")
-                                    }}>oil</NavDropdown.Item>
+                                    }}>Oil</NavDropdown.Item>
                                     {/*<NavDropdown.Item onClick={()=>{selectTheme("REGULAR")}}>Regular</NavDropdown.Item>*/}
                                 </NavDropdown>
                                 {currentGameTabVisible && <Nav.Link as={NavLink}
