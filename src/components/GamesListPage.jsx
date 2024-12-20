@@ -153,7 +153,8 @@ const GamesListPage = ({
             <div style={playerName.length > 0 ? styles.list : styles.listDisabled}>
                 {games.map((game, index) => (
                     game.turn === 0 && <div key={index}
-                                            style={playerName.length > 0 && game.players.length < 6 && localStorage.getItem('gameID') ? styles.list : styles.listDisabled}>
+                                            style={(playerName.length > 0 && game.players.length < 6) || localStorage.getItem('gameID') ? styles.list : styles.listDisabled}>
+
                         <GameListEntry numberOfPayers={String(game.players.length)}
                                        gameID={game.id}
                                        playerNames={game.players.map(player => player.name).join(", ")}
