@@ -1,7 +1,6 @@
 .ranking-table {
     display: flex;
     flex-direction: column; /* Stack rows vertically */
-    width: 100%;
     border: 5px solid #ddd;
     border-radius: 20px;  /* Rounded corners for the table */
     margin-bottom: 10px;
