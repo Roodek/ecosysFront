@@ -151,7 +151,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('WOLF')}</Col>
-                                        <Col><strong>WOLF</strong></Col>
+                                        <Col><strong>12x WOLF</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -173,7 +173,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('FOX')}</Col>
-                                        <Col><strong>FOX</strong></Col>
+                                        <Col><strong>12x FOX</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -187,7 +187,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('BEE')}</Col>
-                                        <Col><strong>BEE</strong></Col>
+                                        <Col><strong>8x BEE</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -200,7 +200,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('BEAR')}</Col>
-                                        <Col><strong>BEAR</strong></Col>
+                                        <Col><strong>12x BEAR</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -213,7 +213,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('EAGLE')}</Col>
-                                        <Col><strong>EAGLE</strong></Col>
+                                        <Col><strong>8x EAGLE</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -227,7 +227,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('FISH')}</Col>
-                                        <Col><strong>FISH</strong></Col>
+                                        <Col><strong>10x FISH</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -241,7 +241,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('DRAGONFLY')}</Col>
-                                        <Col><strong>DRAGONFLY</strong></Col>
+                                        <Col><strong>8x DRAGONFLY</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -255,7 +255,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('ELK')}</Col>
-                                        <Col><strong>ELK</strong></Col>
+                                        <Col><strong>12x ELK</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -268,7 +268,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('RABBIT')}</Col>
-                                        <Col><strong>RABBIT</strong></Col>
+                                        <Col><strong>8x RABBIT</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -285,7 +285,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('MEADOW')}</Col>
-                                        <Col><strong>MEADOW</strong></Col>
+                                        <Col><strong>20x MEADOW</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>
@@ -308,7 +308,7 @@ const MainPage = ({selectTheme}) => {
                                 <Container>
                                     <Row>
                                         <Col>{renderCard('RIVER')}</Col>
-                                        <Col><strong>RIVER</strong></Col>
+                                        <Col><strong>20x RIVER</strong></Col>
                                     </Row>
                                 </Container>
                             </Accordion.Header>

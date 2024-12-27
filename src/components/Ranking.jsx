@@ -17,6 +17,8 @@ const Ranking = ({ players = [] }) => {
                 {cardTypes.map((cardType, index) => (
                     <div key={index} className="header-cell card-type">{cardType}</div>
                 ))}
+                <div className="header-cell card-type">Number of gaps</div>
+                <div className="header-cell card-type">Gap points</div>
             </div>
             {/* Player Rows */}
             {players.map((player, index) => (
@@ -28,6 +30,8 @@ const Ranking = ({ players = [] }) => {
                             {player.finalGeneralPointCount.cardCount[cardType] || 0}
                         </div>
                     ))}
+                    <div className="card-points">{player.finalGeneralPointCount.ecosystemGaps} </div>
+                    <div className="card-points">{player.finalGeneralPointCount.gapPoints} </div>
                 </div>
             ))}
         </div>
