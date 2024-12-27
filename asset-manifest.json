@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/ecosysFront/static/css/main.397c5812.css",
+    "main.css": "/ecosysFront/static/css/main.21856a22.css",
     "main.js": "/ecosysFront/static/js/main.5e15e035.js",
     "static/js/488.3edfe2dd.chunk.js": "/ecosysFront/static/js/488.3edfe2dd.chunk.js",
     "static/media/BACKGROUND.webp": "/ecosysFront/static/media/BACKGROUND.53d0150b1f3ca54f43f1.webp",
@@ -17,12 +17,12 @@
     "static/media/ELK.webp": "/ecosysFront/static/media/ELK.a1f8dbe0e034357b6ff6.webp",
     "static/media/BACKGROUND_old.webp": "/ecosysFront/static/media/BACKGROUND_old.747d9bec78b37fcd6913.webp",
     "index.html": "/ecosysFront/index.html",
-    "main.397c5812.css.map": "/ecosysFront/static/css/main.397c5812.css.map",
+    "main.21856a22.css.map": "/ecosysFront/static/css/main.21856a22.css.map",
     "main.5e15e035.js.map": "/ecosysFront/static/js/main.5e15e035.js.map",
     "488.3edfe2dd.chunk.js.map": "/ecosysFront/static/js/488.3edfe2dd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.397c5812.css",
+    "static/css/main.21856a22.css",
     "static/js/main.5e15e035.js"
   ]
 }
